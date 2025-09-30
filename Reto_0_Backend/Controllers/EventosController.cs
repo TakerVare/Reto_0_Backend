@@ -22,7 +22,7 @@ namespace Reto_0_Backend.Controllers
             return Ok(Eventos);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("/eventos/{id}")]
         public ActionResult<Evento> GetEvento(int id)
         {
             var evento = Eventos.FirstOrDefault(e => e.Id == id);
