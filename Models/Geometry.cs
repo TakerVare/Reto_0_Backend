@@ -11,9 +11,8 @@ public class Geometry
     public Geometry(string type, double[] coordinates)
     {
         this.type = type;
-        this.coordinates[0] = coordinates[0];
-        this.coordinates[1] = coordinates[1];
-
+        this.coordinates = coordinates;
+        
     }
 
    

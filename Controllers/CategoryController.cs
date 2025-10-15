@@ -9,16 +9,10 @@ using System.Text.Json;
 namespace Reto_0_Backend.Controllers;
 
 [ApiController]
-[Route("[Category]")]
+[Route("[controller]")]
 public class CategoryController : ControllerBase
 {
-    /*
-    private static readonly string[] Summaries = new[]
-    {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
-    */
-
+   
     private DataCollectionExample dataCollectionExample = new DataCollectionExample();
 
     private readonly ILogger<CategoryController> _logger;
