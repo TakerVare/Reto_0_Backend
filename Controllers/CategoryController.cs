@@ -13,8 +13,9 @@ namespace Reto_0_Backend.Controllers;
 public class CategoryController : ControllerBase
 {
    
-    private DataCollectionExample dataCollectionExample = new DataCollectionExample();
+    //private DataCollectionExample dataCollectionExample = new DataCollectionExample();
 
+    private static List<Category> categories = new List<Category>();
     private readonly ILogger<CategoryController> _logger;
 
     public CategoryController(ILogger<CategoryController> logger)
@@ -22,21 +23,65 @@ public class CategoryController : ControllerBase
         _logger = logger;
     }
 
-    
+
     [HttpGet]
-    public  IEnumerable<Category> Get()
+    public ActionResult<IEnumerable<Category>> GetCategory()
     {
-                
-        return dataCollectionExample.CategoryCollectionList.ToArray();
-        
-        /*
-        return Enumerable.Range(1, 5).Select(index => new Category
+        return Ok(categories);
+    }
+
+    [HttpGet("{id}")]
+    public ActionResult<Category> GetCategory(string id)
+    {
+        var Category = categories.FirstOrDefault(cat => cat.idCategory == id);
+        if (Category == null)
         {
-            Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        })
-        .ToArray();
-        */
+            return NotFound();
+        }
+        return Ok(Category);
+    }
+
+    /*
+    public IEnumerable<Category> Get()
+    {
+
+        return dataCollectionExample.CategoryCollectionList.ToArray();
+
+    }
+    */
+    [HttpPost]
+    public ActionResult<Category> CreateCategory(Category newCategory)
+    {
+        categories.Add(newCategory);
+        return CreatedAtAction(nameof(GetCategory), new { id = newCategory.idCategory }, newCategory);
+    }
+
+    [HttpPut("{id}")]
+    public IActionResult UpdateCategory(string id, Category updatedCategory)
+    {
+        var category = categories.FirstOrDefault(cat => cat.idCategory == id);
+        if (category == null)
+        {
+            return NotFound();
+        }
+        category.idCategory = updatedCategory.idCategory;
+        category.titleCategory = updatedCategory.titleCategory;
+        category.linkCategory = updatedCategory.linkCategory;
+        category.descriptionCategory = updatedCategory.descriptionCategory;
+        category.layersCategory = updatedCategory.layersCategory;
+
+        return NoContent();
+    }
+    
+    [HttpDelete("{id}")]
+    public IActionResult DeleteCategory(string id)
+    {
+        var category = categories.FirstOrDefault(cat => cat.idCategory == id);
+        if (category == null)
+        {
+            return NotFound();
+        }
+        categories.Remove(category);
+        return NoContent();
     }
 }

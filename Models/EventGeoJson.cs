@@ -4,8 +4,13 @@ public class EventGeoJson
 {
 
     //constructor
-    
-    public EventGeoJson() {}
+
+    public EventGeoJson(List<Feature> features)
+    {
+        this.features = features;
+    }
+
+    public string? id { get; set; }
   
     public List<Feature> features { get; set; }
 }
