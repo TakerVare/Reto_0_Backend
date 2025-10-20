@@ -2,12 +2,12 @@ namespace Reto_0_Backend.Models;
 
 public class Geometry
 {
+    //constructor vacío
+    public Geometry()
+    {
+    }
 
-
-    public string type { get; set; }
-    public double[] coordinates { get; set; }
-    
-    //constructor
+    //constructor con parámetros
     public Geometry(string type, double[] coordinates)
     {
         this.type = type;
@@ -15,8 +15,9 @@ public class Geometry
         
     }
 
-   
+    public string? id { get; set; }
+    public string? type { get; set; }
+    public double[]? coordinates { get; set; }
 
    
 }
-

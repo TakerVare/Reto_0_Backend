@@ -3,7 +3,10 @@ namespace Reto_0_Backend.Models;
 public class EventGeoJson
 {
 
-    //constructor
+    //constructors
+    public EventGeoJson()
+    {
+    }
 
     public EventGeoJson(List<Feature> features)
     {
@@ -12,7 +15,5 @@ public class EventGeoJson
 
     public string? id { get; set; }
   
-    public List<Feature> features { get; set; }
+    public List<Feature>? features { get; set; }
 }
-
-

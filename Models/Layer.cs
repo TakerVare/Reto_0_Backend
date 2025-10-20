@@ -6,12 +6,13 @@ public class Layer
     //constructor
     public Layer() { }
     
-    public string name { get; set; }
+    public string? id { get; set; }
+    public string? name { get; set; }
 
-    public string serviceUrl { get; set; }
-    public string serviceTypeId { get; set; }
+    public string? serviceUrl { get; set; }
+    public string? serviceTypeId { get; set; }
 
-    public List<LayerParameters> parameters { get; set; }
+    public List<LayerParameters>? parameters { get; set; }
 
    
 }

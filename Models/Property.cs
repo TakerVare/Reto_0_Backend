@@ -34,13 +34,13 @@ public class Property
         this.sources = sources;
     }
 
-    public string id { get; set; }
+    public string? id { get; set; }
 
-    public string title { get; set; }
+    public string? title { get; set; }
 
     public string? description { get; set; }
 
-    public string link { get; set; }
+    public string? link { get; set; }
 
     public string? closed { get; set; }
 
@@ -48,12 +48,11 @@ public class Property
 
     public double magnitudeValue { get; set; }
 
-    public string magnitudeUnit { get; set; }
+    public string? magnitudeUnit { get; set; }
 
-    public List<Category> categories { get; set; }
+    public List<Category>? categories { get; set; }
     
-    public List<Source> sources { get; set; }
+    public List<Source>? sources { get; set; }
     
    
 }
-

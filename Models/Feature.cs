@@ -3,7 +3,13 @@ namespace Reto_0_Backend.Models;
 public class Feature
 {
     
-    //constructor
+    //constructors
+    // Constructor vacío (necesario para inicializadores de objetos)
+    public Feature()
+    {
+    }
+    
+    // Constructor con parámetros
     public Feature(List<Property> properties, Geometry geometry)
     {
         this.properties = properties;
@@ -11,9 +17,8 @@ public class Feature
     }
 
     public string? id { get; set; }
-    public List<Property> properties { get; set; }
-    public Geometry geometry { get; set; }
+    public List<Property>? properties { get; set; }
+    public Geometry? geometry { get; set; }
 
    
 }
-
