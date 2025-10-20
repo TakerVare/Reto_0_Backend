@@ -12,10 +12,6 @@ namespace Reto_0_Backend.Controllers;
 [Route("[controller]")]
 public class GeometryController : ControllerBase
 {
-   
-    //private DataCollectionExample dataCollectionExample = new DataCollectionExample();
-
-    private static List<Geometry> geometries = new List<Geometry>();
     private readonly ILogger<Geometry> _logger;
 
     public GeometryController(ILogger<Geometry> logger)
@@ -23,6 +19,9 @@ public class GeometryController : ControllerBase
         _logger = logger;
     }
 
+    // Nota: Geometry no tiene lista en DataCollectionExample, 
+    // ya que se usan dentro de Events y Features
+    private static List<Geometry> geometries = new List<Geometry>();
 
     [HttpGet]
     public ActionResult<IEnumerable<Geometry>> GetGeometry()
@@ -46,7 +45,7 @@ public class GeometryController : ControllerBase
     public ActionResult<Geometry> CreateGeometry(Geometry newGeometry)
     {
         geometries.Add(newGeometry);
-        return CreatedAtAction(nameof(newGeometry), new { id = newGeometry }, newGeometry);
+        return CreatedAtAction(nameof(GetGeometry), new { id = newGeometry.id }, newGeometry);
     }
 
     [HttpPut("{id}")]

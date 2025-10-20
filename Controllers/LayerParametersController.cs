@@ -12,10 +12,6 @@ namespace Reto_0_Backend.Controllers;
 [Route("[controller]")]
 public class LayerParametersController : ControllerBase
 {
-   
-    //private DataCollectionExample dataCollectionExample = new DataCollectionExample();
-
-    private static List<LayerParameters> layersParameters = new List<LayerParameters>();
     private readonly ILogger<LayerParameters> _logger;
 
     public LayerParametersController(ILogger<LayerParameters> logger)
@@ -23,6 +19,9 @@ public class LayerParametersController : ControllerBase
         _logger = logger;
     }
 
+    // Nota: LayerParameters no tiene lista en DataCollectionExample,
+    // ya que se usan dentro de Layers
+    private static List<LayerParameters> layersParameters = new List<LayerParameters>();
 
     [HttpGet]
     public ActionResult<IEnumerable<LayerParameters>> GetLayerParameters()
@@ -46,7 +45,7 @@ public class LayerParametersController : ControllerBase
     public ActionResult<LayerParameters> CreateLayerParameters(LayerParameters newLayerParameters)
     {
         layersParameters.Add(newLayerParameters);
-        return CreatedAtAction(nameof(newLayerParameters), new { id = newLayerParameters }, newLayerParameters);
+        return CreatedAtAction(nameof(GetLayerParameters), new { id = newLayerParameters.id }, newLayerParameters);
     }
 
     [HttpPut("{id}")]

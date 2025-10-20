@@ -12,32 +12,37 @@ namespace Reto_0_Backend.Controllers;
 [Route("[controller]")]
 public class EventGeoJsonController : ControllerBase
 {
-   
-    //private DataCollectionExample dataCollectionExample = new DataCollectionExample();
-
-    private static List<EventGeoJson> evenstGeoJson = new List<EventGeoJson>();
+    private readonly DataCollectionExample _dataCollection;
     private readonly ILogger<EventGeoJson> _logger;
 
-    public EventGeoJsonController(ILogger<EventGeoJson> logger)
+    public EventGeoJsonController(ILogger<EventGeoJson> logger, DataCollectionExample dataCollection)
     {
         _logger = logger;
+        _dataCollection = dataCollection;
     }
 
 
     [HttpGet]
     public ActionResult<IEnumerable<EventGeoJson>> GetEventGeoJson()
     {
-        return Ok(evenstGeoJson);
+        // Crear EventGeoJson a partir de FeatureCollectionList
+        var eventGeoJson = new EventGeoJson
+        {
+            id = "geojson-collection",
+            features = _dataCollection.FeatureCollectionList
+        };
+        return Ok(new List<EventGeoJson> { eventGeoJson });
     }
 
     [HttpGet("{id}")]
     public ActionResult<EventGeoJson> GetEventGeoJson(string id)
     {
-        var eventGeoJson = evenstGeoJson.FirstOrDefault(evenGJ => evenGJ.id == id);
-        if (eventGeoJson == null)
+        // Crear EventGeoJson dinámicamente
+        var eventGeoJson = new EventGeoJson
         {
-            return NotFound();
-        }
+            id = id,
+            features = _dataCollection.FeatureCollectionList
+        };
         return Ok(eventGeoJson);
     }
 
@@ -45,33 +50,30 @@ public class EventGeoJsonController : ControllerBase
     [HttpPost]
     public ActionResult<EventGeoJson> CreateEventGeoJson(EventGeoJson newEventGJ)
     {
-        evenstGeoJson.Add(newEventGJ);
-        return CreatedAtAction(nameof(newEventGJ), new { id = newEventGJ }, newEventGJ);
+        if (newEventGJ.features != null)
+        {
+            _dataCollection.FeatureCollectionList.AddRange(newEventGJ.features);
+        }
+        return CreatedAtAction(nameof(GetEventGeoJson), new { id = newEventGJ.id }, newEventGJ);
     }
 
     [HttpPut("{id}")]
     public IActionResult UpdateEvent(string id, EventGeoJson updatedEventGeoJson)
     {
-        var existingEventGJ = evenstGeoJson.FirstOrDefault(evenGJ => evenGJ.id == id);
-        if (existingEventGJ == null)
+        if (updatedEventGeoJson.features != null)
         {
-            return NotFound();
+            // Actualizar las features en la colección
+            _dataCollection.FeatureCollectionList.Clear();
+            _dataCollection.FeatureCollectionList.AddRange(updatedEventGeoJson.features);
         }
-        existingEventGJ.id = updatedEventGeoJson.id;
-        existingEventGJ.features = updatedEventGeoJson.features;
-
         return NoContent();
     }
     
     [HttpDelete("{id}")]
     public IActionResult DeleteEventGJ(string id)
     {
-        var deleteEventGJ = evenstGeoJson.FirstOrDefault(evenGJ => evenGJ.id == id);
-        if (deleteEventGJ == null)
-        {
-            return NotFound();
-        }
-        evenstGeoJson.Remove(deleteEventGJ);
+        // Limpiar la lista de features
+        _dataCollection.FeatureCollectionList.Clear();
         return NoContent();
     }
 }

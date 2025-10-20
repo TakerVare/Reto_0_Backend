@@ -12,10 +12,6 @@ namespace Reto_0_Backend.Controllers;
 [Route("[controller]")]
 public class PropertyController : ControllerBase
 {
-   
-    //private DataCollectionExample dataCollectionExample = new DataCollectionExample();
-
-    private static List<Property> properties = new List<Property>();
     private readonly ILogger<Property> _logger;
 
     public PropertyController(ILogger<Property> logger)
@@ -23,6 +19,9 @@ public class PropertyController : ControllerBase
         _logger = logger;
     }
 
+    // Nota: Property no tiene lista en DataCollectionExample,
+    // ya que se usan dentro de Features
+    private static List<Property> properties = new List<Property>();
 
     [HttpGet]
     public ActionResult<IEnumerable<Property>> GetProperties()
@@ -46,7 +45,7 @@ public class PropertyController : ControllerBase
     public ActionResult<Property> CreateProperty(Property newProperty)
     {
         properties.Add(newProperty);
-        return CreatedAtAction(nameof(newProperty), new { id = newProperty }, newProperty);
+        return CreatedAtAction(nameof(GetProperty), new { id = newProperty.id }, newProperty);
     }
 
     [HttpPut("{id}")]

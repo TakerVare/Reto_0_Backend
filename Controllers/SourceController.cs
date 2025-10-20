@@ -12,10 +12,6 @@ namespace Reto_0_Backend.Controllers;
 [Route("[controller]")]
 public class SourceController : ControllerBase
 {
-   
-    //private DataCollectionExample dataCollectionExample = new DataCollectionExample();
-
-    private static List<Source> sources = new List<Source>();
     private readonly ILogger<Source> _logger;
 
     public SourceController(ILogger<Source> logger)
@@ -23,9 +19,12 @@ public class SourceController : ControllerBase
         _logger = logger;
     }
 
+    // Nota: Source no tiene lista en DataCollectionExample,
+    // ya que se usan dentro de Events y Properties
+    private static List<Source> sources = new List<Source>();
 
     [HttpGet]
-    public ActionResult<IEnumerable<Source>> GetLayers()
+    public ActionResult<IEnumerable<Source>> GetSources()
     {
         return Ok(sources);
     }
@@ -46,7 +45,7 @@ public class SourceController : ControllerBase
     public ActionResult<Source> CreateSource(Source newSource)
     {
         sources.Add(newSource);
-        return CreatedAtAction(nameof(newSource), new { id = newSource }, newSource);
+        return CreatedAtAction(nameof(GetSource), new { id = newSource.id }, newSource);
     }
 
     [HttpPut("{id}")]

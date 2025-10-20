@@ -12,28 +12,26 @@ namespace Reto_0_Backend.Controllers;
 [Route("[controller]")]
 public class EventController : ControllerBase
 {
-   
-    //private DataCollectionExample dataCollectionExample = new DataCollectionExample();
-
-    private static List<Event> events = new List<Event>();
+    private readonly DataCollectionExample _dataCollection;
     private readonly ILogger<EventController> _logger;
 
-    public EventController(ILogger<EventController> logger)
+    public EventController(ILogger<EventController> logger, DataCollectionExample dataCollection)
     {
         _logger = logger;
+        _dataCollection = dataCollection;
     }
 
 
     [HttpGet]
     public ActionResult<IEnumerable<Event>> GetEvent()
     {
-        return Ok(events);
+        return Ok(_dataCollection.EventCollectionList);
     }
 
     [HttpGet("{id}")]
     public ActionResult<Event> GetEvent(string id)
     {
-        var Event = events.FirstOrDefault(even => even.id == id);
+        var Event = _dataCollection.EventCollectionList.FirstOrDefault(even => even.id == id);
         if (Event == null)
         {
             return NotFound();
@@ -45,14 +43,14 @@ public class EventController : ControllerBase
     [HttpPost]
     public ActionResult<Event> CreateEvent(Event newEvent)
     {
-        events.Add(newEvent);
+        _dataCollection.EventCollectionList.Add(newEvent);
         return CreatedAtAction(nameof(GetEvent), new { id = newEvent.id }, newEvent);
     }
 
     [HttpPut("{id}")]
     public IActionResult UpdateEvent(string id, Event updatedEvent)
     {
-        var existingEvent = events.FirstOrDefault(even => even.id == id);
+        var existingEvent = _dataCollection.EventCollectionList.FirstOrDefault(even => even.id == id);
         if (existingEvent == null)
         {
             return NotFound();
@@ -65,7 +63,6 @@ public class EventController : ControllerBase
 
         existingEvent.categories = updatedEvent.categories;
         existingEvent.sources = updatedEvent.sources;
-        existingEvent.categories = updatedEvent.categories;
         existingEvent.geometry = updatedEvent.geometry;
 
         return NoContent();
@@ -74,12 +71,12 @@ public class EventController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult DeleteEvent(string id)
     {
-        var deleteEvent = events.FirstOrDefault(even => even.id == id);
+        var deleteEvent = _dataCollection.EventCollectionList.FirstOrDefault(even => even.id == id);
         if (deleteEvent == null)
         {
             return NotFound();
         }
-        events.Remove(deleteEvent);
+        _dataCollection.EventCollectionList.Remove(deleteEvent);
         return NoContent();
     }
 }

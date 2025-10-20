@@ -12,28 +12,26 @@ namespace Reto_0_Backend.Controllers;
 [Route("[controller]")]
 public class FeatureController : ControllerBase
 {
-   
-    //private DataCollectionExample dataCollectionExample = new DataCollectionExample();
-
-    private static List<Feature> features = new List<Feature>();
+    private readonly DataCollectionExample _dataCollection;
     private readonly ILogger<Feature> _logger;
 
-    public FeatureController(ILogger<Feature> logger)
+    public FeatureController(ILogger<Feature> logger, DataCollectionExample dataCollection)
     {
         _logger = logger;
+        _dataCollection = dataCollection;
     }
 
 
     [HttpGet]
     public ActionResult<IEnumerable<Feature>> GetFeature()
     {
-        return Ok(features);
+        return Ok(_dataCollection.FeatureCollectionList);
     }
 
     [HttpGet("{id}")]
     public ActionResult<Feature> GetFeature(string id)
     {
-        var feature = features.FirstOrDefault(f => f.id == id);
+        var feature = _dataCollection.FeatureCollectionList.FirstOrDefault(f => f.id == id);
         if (feature == null)
         {
             return NotFound();
@@ -43,16 +41,16 @@ public class FeatureController : ControllerBase
 
     
     [HttpPost]
-    public ActionResult<Feature> CreateEventGeoJson(Feature newFeature)
+    public ActionResult<Feature> CreateFeature(Feature newFeature)
     {
-        features.Add(newFeature);
-        return CreatedAtAction(nameof(newFeature), new { id = newFeature }, newFeature);
+        _dataCollection.FeatureCollectionList.Add(newFeature);
+        return CreatedAtAction(nameof(GetFeature), new { id = newFeature.id }, newFeature);
     }
 
     [HttpPut("{id}")]
     public IActionResult UpdateFeature(string id, Feature updatedFeature)
     {
-        var existingFeature = features.FirstOrDefault(f => f.id == id);
+        var existingFeature = _dataCollection.FeatureCollectionList.FirstOrDefault(f => f.id == id);
         if (existingFeature == null)
         {
             return NotFound();
@@ -67,12 +65,12 @@ public class FeatureController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult DeleteFeature(string id)
     {
-        var deleteFeature = features.FirstOrDefault(f => f.id == id);
+        var deleteFeature = _dataCollection.FeatureCollectionList.FirstOrDefault(f => f.id == id);
         if (deleteFeature == null)
         {
             return NotFound();
         }
-        features.Remove(deleteFeature);
+        _dataCollection.FeatureCollectionList.Remove(deleteFeature);
         return NoContent();
     }
 }
