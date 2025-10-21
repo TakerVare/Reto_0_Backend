@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 
-
 namespace Reto_0_Backend.Controllers;
 
 [ApiController]
@@ -21,11 +20,18 @@ public class EventController : ControllerBase
         _dataCollection = dataCollection;
     }
 
-
     [HttpGet]
-    public ActionResult<IEnumerable<Event>> GetEvent()
+    public ActionResult GetEvent()
     {
-        return Ok(_dataCollection.EventCollectionList);
+        // ✅ CAMBIO IMPORTANTE: Devolver con la estructura { events: [...] }
+        // para coincidir con la API de NASA EONET
+        return Ok(new 
+        { 
+            title = "EONET Events",
+            description = "Natural events from EONET.",
+            link = "http://localhost:5229/event",
+            events = _dataCollection.EventCollectionList 
+        });
     }
 
     [HttpGet("{id}")]
@@ -39,7 +45,6 @@ public class EventController : ControllerBase
         return Ok(Event);
     }
 
-    
     [HttpPost]
     public ActionResult<Event> CreateEvent(Event newEvent)
     {
@@ -60,7 +65,6 @@ public class EventController : ControllerBase
         existingEvent.description = updatedEvent.description;
         existingEvent.link = updatedEvent.link;
         existingEvent.closed = updatedEvent.closed;
-
         existingEvent.categories = updatedEvent.categories;
         existingEvent.sources = updatedEvent.sources;
         existingEvent.geometry = updatedEvent.geometry;

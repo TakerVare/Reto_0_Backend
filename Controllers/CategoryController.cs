@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 
-
 namespace Reto_0_Backend.Controllers;
 
 [ApiController]
@@ -21,11 +20,17 @@ public class CategoryController : ControllerBase
         _dataCollection = dataCollection;
     }
 
-
     [HttpGet]
-    public ActionResult<IEnumerable<Category>> GetCategory()
+    public ActionResult GetCategory()
     {
-        return Ok(_dataCollection.CategoryCollectionList);
+        // ✅ CAMBIO: Devolver con la estructura { categories: [...] }
+        return Ok(new 
+        { 
+            title = "EONET Categories",
+            description = "Natural event categories from EONET.",
+            link = "http://localhost:5229/category",
+            categories = _dataCollection.CategoryCollectionList 
+        });
     }
 
     [HttpGet("{id}")]
