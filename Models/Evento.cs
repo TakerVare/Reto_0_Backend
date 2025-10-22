@@ -1,10 +1,10 @@
 namespace Reto_0_Backend.Models;
 
-public class Event
+public class Evento
 {
 
     //constructor
-    public Event() { }
+    public Evento() { }
     
     public string id { get; set; }
 

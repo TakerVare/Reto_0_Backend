@@ -1,7 +1,12 @@
 using Reto_0_Backend;
 using Reto_0_Backend.Models;
+using Reto_0_Backend.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("EonetDB");
+
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>(provider =>
+new CategoryRepository(connectionString));
 
 // Añadir política CORS
 builder.Services.AddCors(options =>

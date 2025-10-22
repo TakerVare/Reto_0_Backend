@@ -35,25 +35,25 @@ public class EventController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Event> GetEvent(string id)
+    public ActionResult<Evento> GetEvent(string id)
     {
-        var Event = _dataCollection.EventCollectionList.FirstOrDefault(even => even.id == id);
-        if (Event == null)
+        var Evento = _dataCollection.EventCollectionList.FirstOrDefault(even => even.id == id);
+        if (Evento == null)
         {
             return NotFound();
         }
-        return Ok(Event);
+        return Ok(Evento);
     }
 
     [HttpPost]
-    public ActionResult<Event> CreateEvent(Event newEvent)
+    public ActionResult<Evento> CreateEvent(Evento newEvent)
     {
         _dataCollection.EventCollectionList.Add(newEvent);
         return CreatedAtAction(nameof(GetEvent), new { id = newEvent.id }, newEvent);
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateEvent(string id, Event updatedEvent)
+    public IActionResult UpdateEvent(string id, Evento updatedEvent)
     {
         var existingEvent = _dataCollection.EventCollectionList.FirstOrDefault(even => even.id == id);
         if (existingEvent == null)

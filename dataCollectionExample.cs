@@ -8,7 +8,7 @@ namespace Reto_0_Backend
     public class DataCollectionExample
     {
         public  List<Category> CategoryCollectionList { get; set; }
-        public  List<Event> EventCollectionList { get; set; }
+        public  List<Evento> EventCollectionList { get; set; }
         public  List<Feature> FeatureCollectionList { get; set; }
         public  List<Layer> LayerCollectionList { get; set; }
 
@@ -124,9 +124,9 @@ namespace Reto_0_Backend
             };
 
             // Eventos
-            EventCollectionList = new List<Event>
+            EventCollectionList = new List<Evento>
             {
-                new Event
+                new Evento
                 {
                     id = "EONET_15547",
                     title = "Tropical Storm Narda",
@@ -160,7 +160,7 @@ namespace Reto_0_Backend
                         new Geometry("Point", new double[] { -105.6, 15.7 })
                     }
                 },
-                new Event
+                new Evento
                 {
                     id = "EONET_15545",
                     title = "Super Typhoon Ragasa",
@@ -206,7 +206,7 @@ namespace Reto_0_Backend
                         new Geometry("Point", new double[] { 117.1, 20.4 })
                     }
                 },
-                new Event
+                new Evento
                 {
                     id = "EONET_15546",
                     title = "Typhoon Neoguri",
