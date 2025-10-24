@@ -11,6 +11,10 @@ namespace Reto_0_Backend.Repositories;
         Task UpdateAsync(Source geometry);
         Task DeleteAsync(string id);
         //Task InicializarDatosAsync();
+        
+        //Métodos para tablascruzadas
+        Task<List<Source>> GetAllByPropertyAsync(string propertyId);
+
     }
 
 

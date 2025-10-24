@@ -1,6 +1,7 @@
 -- =============================================
 -- Script de Creación de Base de Datos EONET
 -- MySQL Server
+-- (Corregido para Geometries.Id como VARCHAR(50))
 -- =============================================
 
 -- Crear la base de datos
@@ -247,111 +248,111 @@ INSERT INTO EventSources (EventId, SourceId) VALUES
 
 -- Insertar Geometries para EONET_15547 (Tropical Storm Narda)
 INSERT INTO Geometries (Id, Type, Longitude, Latitude) VALUES
-('1', 'Point', -99.4, 14.4),
-('2', 'Point', -100.1, 15.1),
-('3', 'Point', -101, 15.2),
-('4', 'Point', -102.3, 15.6),
-('5', 'Point', -103.3, 16.1),
-('6', 'Point', -104.5, 15.9),
-('7', 'Point', -105.6, 15.7);
+('EONET_15547_1', 'Point', -99.4, 14.4),
+('EONET_15547_2', 'Point', -100.1, 15.1),
+('EONET_15547_3', 'Point', -101, 15.2),
+('EONET_15547_4', 'Point', -102.3, 15.6),
+('EONET_15547_5', 'Point', -103.3, 16.1),
+('EONET_15547_6', 'Point', -104.5, 15.9),
+('EONET_15547_7', 'Point', -105.6, 15.7);
 
 -- Insertar EventGeometries para EONET_15547
 INSERT INTO EventGeometries (EventId, GeometryId, SequenceOrder) VALUES
-('EONET_15547', '1', 1),
-('EONET_15547', '2', 2),
-('EONET_15547', '3', 3),
-('EONET_15547', '4', 4),
-('EONET_15547', '5', 5),
-('EONET_15547', '6', 6),
-('EONET_15547', '7', 7);
+('EONET_15547', 'EONET_15547_1', 1),
+('EONET_15547', 'EONET_15547_2', 2),
+('EONET_15547', 'EONET_15547_3', 3),
+('EONET_15547', 'EONET_15547_4', 4),
+('EONET_15547', 'EONET_15547_5', 5),
+('EONET_15547', 'EONET_15547_6', 6),
+('EONET_15547', 'EONET_15547_7', 7);
 
 -- Insertar Geometries para EONET_15545 (Super Typhoon Ragasa)
-INSERT INTO Geometries (Type, Longitude, Latitude) VALUES
-('Point', 132.2, 16),
-('Point', 131.2, 16),
-('Point', 130.8, 16),
-('Point', 130.5, 16),
-('Point', 130, 16.2),
-('Point', 129.6, 16.3),
-('Point', 129, 16.8),
-('Point', 128.6, 17.3),
-('Point', 127.8, 17.8),
-('Point', 127, 18),
-('Point', 126.3, 18.4),
-('Point', 125.3, 18.9),
-('Point', 124.1, 19.1),
-('Point', 122.8, 19.2),
-('Point', 121.7, 19.3),
-('Point', 120.5, 19.4),
-('Point', 119.3, 19.6),
-('Point', 118.2, 20),
-('Point', 117.1, 20.4);
+INSERT INTO Geometries (Id, Type, Longitude, Latitude) VALUES
+('EONET_15545_1', 'Point', 132.2, 16),
+('EONET_15545_2', 'Point', 131.2, 16),
+('EONET_15545_3', 'Point', 130.8, 16),
+('EONET_15545_4', 'Point', 130.5, 16),
+('EONET_15545_5', 'Point', 130, 16.2),
+('EONET_15545_6', 'Point', 129.6, 16.3),
+('EONET_15545_7', 'Point', 129, 16.8),
+('EONET_15545_8', 'Point', 128.6, 17.3),
+('EONET_15545_9', 'Point', 127.8, 17.8),
+('EONET_15545_10', 'Point', 127, 18),
+('EONET_15545_11', 'Point', 126.3, 18.4),
+('EONET_15545_12', 'Point', 125.3, 18.9),
+('EONET_15545_13', 'Point', 124.1, 19.1),
+('EONET_15545_14', 'Point', 122.8, 19.2),
+('EONET_15545_15', 'Point', 121.7, 19.3),
+('EONET_15545_16', 'Point', 120.5, 19.4),
+('EONET_15545_17', 'Point', 119.3, 19.6),
+('EONET_15545_18', 'Point', 118.2, 20),
+('EONET_15545_19', 'Point', 117.1, 20.4);
 
 -- Insertar EventGeometries para EONET_15545
 INSERT INTO EventGeometries (EventId, GeometryId, SequenceOrder) VALUES
-('EONET_15545', 8, 1),
-('EONET_15545', 9, 2),
-('EONET_15545', 10, 3),
-('EONET_15545', 11, 4),
-('EONET_15545', 12, 5),
-('EONET_15545', 13, 6),
-('EONET_15545', 14, 7),
-('EONET_15545', 15, 8),
-('EONET_15545', 16, 9),
-('EONET_15545', 17, 10),
-('EONET_15545', 18, 11),
-('EONET_15545', 19, 12),
-('EONET_15545', 20, 13),
-('EONET_15545', 21, 14),
-('EONET_15545', 22, 15),
-('EONET_15545', 23, 16),
-('EONET_15545', 24, 17),
-('EONET_15545', 25, 18),
-('EONET_15545', 26, 19);
+('EONET_15545', 'EONET_15545_1', 1),
+('EONET_15545', 'EONET_15545_2', 2),
+('EONET_15545', 'EONET_15545_3', 3),
+('EONET_15545', 'EONET_15545_4', 4),
+('EONET_15545', 'EONET_15545_5', 5),
+('EONET_15545', 'EONET_15545_6', 6),
+('EONET_15545', 'EONET_15545_7', 7),
+('EONET_15545', 'EONET_15545_8', 8),
+('EONET_15545', 'EONET_15545_9', 9),
+('EONET_15545', 'EONET_15545_10', 10),
+('EONET_15545', 'EONET_15545_11', 11),
+('EONET_15545', 'EONET_15545_12', 12),
+('EONET_15545', 'EONET_15545_13', 13),
+('EONET_15545', 'EONET_15545_14', 14),
+('EONET_15545', 'EONET_15545_15', 15),
+('EONET_15545', 'EONET_15545_16', 16),
+('EONET_15545', 'EONET_15545_17', 17),
+('EONET_15545', 'EONET_15545_18', 18),
+('EONET_15545', 'EONET_15545_19', 19);
 
 -- Insertar Geometries para EONET_15546 (Typhoon Neoguri)
-INSERT INTO Geometries (Type, Longitude, Latitude) VALUES
-('Point', 162.3, 23.4),
-('Point', 161.3, 23.7),
-('Point', 160.3, 24.1),
-('Point', 159.1, 24.8),
-('Point', 158, 25.1),
-('Point', 157, 25.4),
-('Point', 156.1, 25.9),
-('Point', 155, 26.3),
-('Point', 153.8, 26.8),
-('Point', 152.6, 27.2),
-('Point', 151.8, 27.7),
-('Point', 151.4, 28.5),
-('Point', 150.8, 29.2),
-('Point', 151, 29.7),
-('Point', 151.8, 30.2),
-('Point', 152.6, 30.3),
-('Point', 152.8, 30.5),
-('Point', 153.1, 30.5),
-('Point', 153.3, 30.7);
+INSERT INTO Geometries (Id, Type, Longitude, Latitude) VALUES
+('EONET_15546_1', 'Point', 162.3, 23.4),
+('EONET_15546_2', 'Point', 161.3, 23.7),
+('EONET_15546_3', 'Point', 160.3, 24.1),
+('EONET_15546_4', 'Point', 159.1, 24.8),
+('EONET_15546_5', 'Point', 158, 25.1),
+('EONET_15546_6', 'Point', 157, 25.4),
+('EONET_15546_7', 'Point', 156.1, 25.9),
+('EONET_15546_8', 'Point', 155, 26.3),
+('EONET_15546_9', 'Point', 153.8, 26.8),
+('EONET_15546_10', 'Point', 152.6, 27.2),
+('EONET_15546_11', 'Point', 151.8, 27.7),
+('EONET_15546_12', 'Point', 151.4, 28.5),
+('EONET_15546_13', 'Point', 150.8, 29.2),
+('EONET_15546_14', 'Point', 151, 29.7),
+('EONET_15546_15', 'Point', 151.8, 30.2),
+('EONET_15546_16', 'Point', 152.6, 30.3),
+('EONET_15546_17', 'Point', 152.8, 30.5),
+('EONET_15546_18', 'Point', 153.1, 30.5),
+('EONET_15546_19', 'Point', 153.3, 30.7);
 
 -- Insertar EventGeometries para EONET_15546
 INSERT INTO EventGeometries (EventId, GeometryId, SequenceOrder) VALUES
-('EONET_15546', 27, 1),
-('EONET_15546', 28, 2),
-('EONET_15546', 29, 3),
-('EONET_15546', 30, 4),
-('EONET_15546', 31, 5),
-('EONET_15546', 32, 6),
-('EONET_15546', 33, 7),
-('EONET_15546', 34, 8),
-('EONET_15546', 35, 9),
-('EONET_15546', 36, 10),
-('EONET_15546', 37, 11),
-('EONET_15546', 38, 12),
-('EONET_15546', 39, 13),
-('EONET_15546', 40, 14),
-('EONET_15546', 41, 15),
-('EONET_15546', 42, 16),
-('EONET_15546', 43, 17),
-('EONET_15546', 44, 18),
-('EONET_15546', 45, 19);
+('EONET_15546', 'EONET_15546_1', 1),
+('EONET_15546', 'EONET_15546_2', 2),
+('EONET_15546', 'EONET_15546_3', 3),
+('EONET_15546', 'EONET_15546_4', 4),
+('EONET_15546', 'EONET_15546_5', 5),
+('EONET_15546', 'EONET_15546_6', 6),
+('EONET_15546', 'EONET_15546_7', 7),
+('EONET_15546', 'EONET_15546_8', 8),
+('EONET_15546', 'EONET_15546_9', 9),
+('EONET_15546', 'EONET_15546_10', 10),
+('EONET_15546', 'EONET_15546_11', 11),
+('EONET_15546', 'EONET_15546_12', 12),
+('EONET_15546', 'EONET_15546_13', 13),
+('EONET_15546', 'EONET_15546_14', 14),
+('EONET_15546', 'EONET_15546_15', 15),
+('EONET_15546', 'EONET_15546_16', 16),
+('EONET_15546', 'EONET_15546_17', 17),
+('EONET_15546', 'EONET_15546_18', 18),
+('EONET_15546', 'EONET_15546_19', 19);
 
 -- Insertar Properties para Features
 INSERT INTO Properties (PropertyId, Title, Description, Link, Closed, Date, MagnitudeValue, MagnitudeUnit) VALUES
@@ -373,58 +374,5 @@ INSERT INTO PropertySources (PropertyId, SourceId) VALUES
 
 -- Insertar Features
 INSERT INTO Features (FeatureId, GeometryId) VALUES
-('EONET_15547_1', 1),
-('EONET_15547_2', 2),
-('EONET_15545_1', 8),
-('EONET_15546_1', 27);
-
--- Insertar FeatureProperties
-INSERT INTO FeatureProperties (FeatureId, PropertyId) VALUES
-(1, 'EONET_15547'),
-(2, 'EONET_15545'),
-(3, 'EONET_15546');
-
--- Insertar LayerParameters
-INSERT INTO LayerParameters (TILEMATRIXSET, FORMAT) VALUES
-('2km', 'image/png');
-
--- Insertar Layers
-INSERT INTO Layers (Name, ServiceUrl, ServiceTypeId) VALUES
-('AIRS_CO_Total_Column_Day', 'https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi', 'WMTS_1_0_0'),
-('AIRS_CO_Total_Column_Night', 'https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi', 'WMTS_1_0_0'),
-('AIRS_Dust_Score_Ocean_Day', 'https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi', 'WMTS_1_0_0'),
-('AIRS_Dust_Score_Ocean_Night', 'https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi', 'WMTS_1_0_0'),
-('AIRS_Prata_SO2_Index_Day', 'https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi', 'WMTS_1_0_0'),
-('AIRS_Prata_SO2_Index_Night', 'https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi', 'WMTS_1_0_0'),
-('AIRS_Precipitation_Day', 'https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi', 'WMTS_1_0_0');
-
--- Insertar LayerParametersRelation
-INSERT INTO LayerParametersRelation (LayerId, ParameterId) VALUES
-(1, 1),
-(2, 1),
-(3, 1),
-(4, 1),
-(5, 1),
-(6, 1),
-(7, 1);
-
--- =============================================
--- FIN DEL SCRIPT
--- =============================================
-
--- Verificar datos insertados
-SELECT 'Categorías insertadas:' as Info, COUNT(*) as Total FROM Categories
-UNION ALL
-SELECT 'Eventos insertados:', COUNT(*) FROM Events
-UNION ALL
-SELECT 'Geometrías insertadas:', COUNT(*) FROM Geometries
-UNION ALL
-SELECT 'Sources insertados:', COUNT(*) FROM Sources
-UNION ALL
-SELECT 'Properties insertadas:', COUNT(*) FROM Properties
-UNION ALL
-SELECT 'Features insertadas:', COUNT(*) FROM Features
-UNION ALL
-SELECT 'Layers insertados:', COUNT(*) FROM Layers
-UNION ALL
-SELECT 'LayerParameters insertados:', COUNT(*) FROM LayerParameters;
+('EONET_15547_1', 'EONET_15547_1'),
+('EONET_15547

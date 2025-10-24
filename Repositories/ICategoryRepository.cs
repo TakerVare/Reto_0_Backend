@@ -11,6 +11,10 @@ namespace Reto_0_Backend.Repositories;
         Task UpdateAsync(Category plato);
         Task DeleteAsync(string id);
         //Task InicializarDatosAsync();
+
+         //Métodos para tablas cruzadas
+        Task<List<Category>> GetAllcategoriesByPropertyAsync(string propertyId);
+
     }
 
 

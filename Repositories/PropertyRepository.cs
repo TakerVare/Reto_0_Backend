@@ -4,35 +4,44 @@ using Reto_0_Backend.Models;
 namespace Reto_0_Backend.Repositories
 {
     
-    public class SourceRepository : ISourceRepository
+    public class PropertyRepository : IPropertyRepository
     {
 
         private readonly string _connectionString;
 
-        public SourceRepository(string connectionString)
+        public PropertyRepository(string connectionString)
         {
             _connectionString = connectionString;
         }
 
-        public async Task<List<Source>> GetAllAsync()
+        public async Task<List<Property>> GetAllAsync()
         {
-            var sources = new List<Source>();
+            var properties = new List<Property>();
 
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
 
-                string query = "SELECT Id, Url FROM Sources";
+                string query = "SELECT PropertyId, Title, Description, Link, Closed, Date, MagnitudeValue, MagnitudeUnit FROM Properties";
                 using (var command = new SqlCommand(query, connection))
                 {
                     using (var reader = await command.ExecuteReaderAsync())
 
                         while (await reader.ReadAsync())
                         {
-                            var source = new Source
+                            var property = new Property
                             {
                                 id = reader.GetString(0),
-                                url = reader.GetString(1)
+                                title = reader.GetString(1),
+                                description = reader.GetString(2),
+                                link = reader.GetString(3),
+                                closed = reader.GetString(4),
+                                date = reader.GetDateTime(5),
+                                magnitudeValue = reader.GetDouble(6),
+                                magnitudeUnit = reader.GetString(7), 
+                                //Pendiente de crear los métodos
+                                categories = GetAllcategoriesByPropertyAsync(id),
+                                sources = new List<Source>()
                             };
 
                             sources.Add(source);
