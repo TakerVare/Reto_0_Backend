@@ -5,10 +5,10 @@ namespace Reto_0_Backend.Repositories;
 
     public interface IEventRepository
     {
-        Task<List<Event>> GetAllAsync();
-        Task<Event?> GetByIdAsync(int id);
-        Task AddAsync(Event evento);
-        Task UpdateAsync(Event evento);
+        Task<List<Evento>> GetAllAsync();
+        Task<Evento?> GetByIdAsync(int id);
+        Task AddAsync(Evento evento);
+        Task UpdateAsync(Evento evento);
         Task DeleteAsync(string id);
         //Task InicializarDatosAsync();
     }
