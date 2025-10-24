@@ -13,7 +13,7 @@ namespace Reto_0_Backend.Repositories;
         //Task InicializarDatosAsync();
 
          //Métodos para tablas cruzadas
-        Task<List<Category>> GetAllcategoriesByPropertyAsync(string propertyId);
+        Task<List<Category>> GetAllCategoriesByPropertyAsync(string propertyId);
 
     }
 

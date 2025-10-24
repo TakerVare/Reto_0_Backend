@@ -139,7 +139,7 @@ namespace Reto_0_Backend.Repositories
 
 
         //métodos para tablas cruzadas
-        Task<List<Category>> GetAllcategoriesByPropertyAsync(string propertyId)
+        Task<List<Category>> GetAllCategoriesByPropertyAsync(string propertyId)
         {
             var categories = new List<Category>();
 
@@ -147,29 +147,23 @@ namespace Reto_0_Backend.Repositories
             {
                 await connection.OpenAsync();
 
-                string query = "SELECT IdCategory, TitleCategory, LinkCategory, DescriptionCategory, LayersCategory FROM Categories WHERE IdCategory = @IdCategory";
+                string query = "SELECT CategoryId FROM PropertyCategories WHERE PropertyId = @PropertyId";
                 using (var command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@IdCategory", propertyId);
+                    command.Parameters.AddWithValue("@PropertyId", propertyId);
 
                     using (var reader = await command.ExecuteReaderAsync())
                     {
                         if (await reader.ReadAsync())
                         {
-                            category = new Category
-                            {
-                                idCategory = reader.GetString(0),
-                                titleCategory = reader.GetString(1),
-                                linkCategory = reader.GetString(2),
-                                descriptionCategory = reader.GetString(3),
-                                layersCategory = reader.GetString(4)
-                            };   
-                            
+                            category = GetByIdAsync(reader.GetString(0));
+                               
+                            categories.Add(category);
                         }
                     }
                 }
             }
-            return category;
+            return categories;
         }
         
 

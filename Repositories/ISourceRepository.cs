@@ -12,8 +12,11 @@ namespace Reto_0_Backend.Repositories;
         Task DeleteAsync(string id);
         //Task InicializarDatosAsync();
         
-        //Métodos para tablascruzadas
+        //Métodos para tablas cruzadas
         Task<List<Source>> GetAllByPropertyAsync(string propertyId);
+
+        Task<List<Source>> GetAllSourcesByPropertyAsync(string propertyId);
+        
 
     }
 

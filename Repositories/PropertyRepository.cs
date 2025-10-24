@@ -39,9 +39,8 @@ namespace Reto_0_Backend.Repositories
                                 date = reader.GetDateTime(5),
                                 magnitudeValue = reader.GetDouble(6),
                                 magnitudeUnit = reader.GetString(7), 
-                                //Pendiente de crear los métodos
-                                categories = GetAllcategoriesByPropertyAsync(id),
-                                sources = new List<Source>()
+                                categories = GetAllCategoriesByPropertyAsync(id),
+                                sources = GetAllSourcesByPropertyAsync(id)
                             };
 
                             sources.Add(source);
@@ -54,15 +53,15 @@ namespace Reto_0_Backend.Repositories
         }
         
 
-        public async Task<Source> GetByIdAsync(string id)
+        public async Task<Property> GetByIdAsync(string id)
         {
-            Source source = null;
+            Property property = null;
 
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
 
-                string query = "SELECT Id, Url FROM Sources WHERE Id = @Id";
+                string query = "SELECT PropertyId, Title, Description, Link, Closed, Date, MagnitudeValue, MagnitudeUnit FROM Properties WHERE PropertyId = @Id";
                 using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Id", id);
@@ -71,20 +70,33 @@ namespace Reto_0_Backend.Repositories
                     {
                         if (await reader.ReadAsync())
                         {
-                            source = new Source
+                            property = new Property
                             {
                                 id = reader.GetString(0),
-                                url = reader.GetString(1)
+                                title = reader.GetString(1),
+                                description = reader.GetString(2),
+                                link = reader.GetString(3),
+                                closed = reader.GetString(4),
+                                date = reader.GetDateTime(5),
+                                magnitudeValue = reader.GetDouble(6),
+                                magnitudeUnit = reader.GetString(7), 
+                                categories = GetAllCategoriesByPropertyAsync(id),
+                                sources = GetAllSourcesByPropertyAsync(id)
                             };   
                             
                         }
                     }
                 }
             }
-            return source;
+            return property;
         }
-
-        public async Task AddAsync(Source source)
+        /* 
+        ##############################################################
+            ME QUEDO AQUÍ
+        ##############################################################
+        
+         */
+        public async Task AddAsync(Property property)
         {
             using (var connection = new SqlConnection(_connectionString))
             {

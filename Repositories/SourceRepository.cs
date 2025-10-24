@@ -158,6 +158,34 @@ namespace Reto_0_Backend.Repositories
             return source;
         }
 
+        Task<List<Source>> GetAllSourcesByPropertyAsync(string propertyId){
+
+            var sources = new List<Source>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                string query = "SELECT SourceId FROM PropertySources WHERE PropertyId = @Id";
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Id", id);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            source = GetByIdAsync(reader.GetString(0));
+                            sources.Add(source);  
+                            
+                        }
+                    }
+                }
+            }
+            return sources;
+
+        }
+
 
         
 
