@@ -1,22 +1,18 @@
 using Reto_0_Backend.Models;
 
-namespace Reto_0_Backend.Repositories;
+namespace Reto_0_Backend.Repositories
 {
 
     public interface IPropertyRepository
     {
         Task<List<Property>> GetAllAsync();
-        Task<Property?> GetByIdAsync(int id);
+        Task<Property?> GetByIdAsync(string id);
         Task AddAsync(Property property);
         Task UpdateAsync(Property property);
         Task DeleteAsync(string id);
-        //Task InicializarDatosAsync();
         
-        //Métodos para tablascruzadas
-        //Task<List<Property>> GetAllByPropertyAsync(string propertyId);
-
+        //Métodos para tablas cruzadas
+        Task<List<Property>> GetAllPropertiesByFeatureAsync(string featureId);
     }
-
-
 
 }

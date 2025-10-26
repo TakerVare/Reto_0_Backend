@@ -1,6 +1,6 @@
 using Reto_0_Backend.Models;
 
-namespace Reto_0_Backend.Repositories;
+namespace Reto_0_Backend.Repositories
 {
 
     public interface IEventRepository
@@ -10,9 +10,6 @@ namespace Reto_0_Backend.Repositories;
         Task AddAsync(Evento evento);
         Task UpdateAsync(Evento evento);
         Task DeleteAsync(string id);
-        //Task InicializarDatosAsync();
     }
-
-
 
 }

@@ -40,8 +40,6 @@ namespace Reto_0_Backend.Repositories
                 }
             }
             return sources;
-
-
         }
         
 
@@ -67,7 +65,6 @@ namespace Reto_0_Backend.Repositories
                                 id = reader.GetString(0),
                                 url = reader.GetString(1)
                             };   
-                            
                         }
                     }
                 }
@@ -108,13 +105,14 @@ namespace Reto_0_Backend.Repositories
                 }
             }
         } 
+        
         public async Task DeleteAsync(string id)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
 
-                string query = "DELETE FROM Sources WHERE Id = @IdGeometry";
+                string query = "DELETE FROM Sources WHERE Id = @IdSource";
                 using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@IdSource", id);
@@ -143,12 +141,10 @@ namespace Reto_0_Backend.Repositories
 
                     using (var reader = await command.ExecuteReaderAsync())
                     {
-                        if (await reader.ReadAsync())
+                        while (await reader.ReadAsync())
                         {
                             Source source = await GetByIdAsync(reader.GetString(0));
                             sources.Add(source);
-
-
                         }
                     }
                 }
@@ -173,27 +169,15 @@ namespace Reto_0_Backend.Repositories
 
                     using (var reader = await command.ExecuteReaderAsync())
                     {
-                        if (await reader.ReadAsync())
+                        while (await reader.ReadAsync())
                         {
                             Source source = await GetByIdAsync(reader.GetString(0));
                             sources.Add(source);
-                               
-                            
                         }
                     }
                 }
             }
             return sources;
         }
-
-        
-
-
-        
-
     }
-
-
-
-
 }

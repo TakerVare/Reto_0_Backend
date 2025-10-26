@@ -8,10 +8,16 @@ namespace Reto_0_Backend.Repositories
     {
 
         private readonly string _connectionString;
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly ISourceRepository _sourceRepository;
 
-        public PropertyRepository(string connectionString)
+        public PropertyRepository(string connectionString,
+                                 ICategoryRepository categoryRepository,
+                                 ISourceRepository sourceRepository)
         {
             _connectionString = connectionString;
+            _categoryRepository = categoryRepository;
+            _sourceRepository = sourceRepository;
         }
 
         public async Task<List<Property>> GetAllAsync()
@@ -29,27 +35,26 @@ namespace Reto_0_Backend.Repositories
 
                         while (await reader.ReadAsync())
                         {
+                            var propertyId = reader.GetString(0);
                             var property = new Property
                             {
-                                id = reader.GetString(0),
+                                id = propertyId,
                                 title = reader.GetString(1),
-                                description = reader.GetString(2),
+                                description = reader.IsDBNull(2) ? null : reader.GetString(2),
                                 link = reader.GetString(3),
-                                closed = reader.GetString(4),
+                                closed = reader.IsDBNull(4) ? null : reader.GetString(4),
                                 date = reader.GetDateTime(5),
                                 magnitudeValue = reader.GetDouble(6),
-                                magnitudeUnit = reader.GetString(7), 
-                                categories = GetAllCategoriesByPropertyAsync(id),
-                                sources = GetAllSourcesByPropertyAsync(id)
+                                magnitudeUnit = reader.IsDBNull(7) ? null : reader.GetString(7), 
+                                categories = await _categoryRepository.GetAllCategoriesByPropertyAsync(propertyId),
+                                sources = await _sourceRepository.GetAllSourcesByPropertyAsync(propertyId)
                             };
 
-                            sources.Add(source);
+                            properties.Add(property);
                         }
                 }
             }
-            return sources;
-
-
+            return properties;
         }
         
 
@@ -70,75 +75,84 @@ namespace Reto_0_Backend.Repositories
                     {
                         if (await reader.ReadAsync())
                         {
+                            var propertyId = reader.GetString(0);
                             property = new Property
                             {
-                                id = reader.GetString(0),
+                                id = propertyId,
                                 title = reader.GetString(1),
-                                description = reader.GetString(2),
+                                description = reader.IsDBNull(2) ? null : reader.GetString(2),
                                 link = reader.GetString(3),
-                                closed = reader.GetString(4),
+                                closed = reader.IsDBNull(4) ? null : reader.GetString(4),
                                 date = reader.GetDateTime(5),
                                 magnitudeValue = reader.GetDouble(6),
-                                magnitudeUnit = reader.GetString(7), 
-                                categories = GetAllCategoriesByPropertyAsync(id),
-                                sources = GetAllSourcesByPropertyAsync(id)
+                                magnitudeUnit = reader.IsDBNull(7) ? null : reader.GetString(7), 
+                                categories = await _categoryRepository.GetAllCategoriesByPropertyAsync(propertyId),
+                                sources = await _sourceRepository.GetAllSourcesByPropertyAsync(propertyId)
                             };   
-                            
                         }
                     }
                 }
             }
             return property;
         }
-        /* 
-        ##############################################################
-            ME QUEDO AQUÍ
-        ##############################################################
-        
-         */
+
         public async Task AddAsync(Property property)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
 
-                string query = "INSERT INTO Sources (Id, Url) VALUES (@IdSource, @UrlSource)";
+                string query = "INSERT INTO Properties (PropertyId, Title, Description, Link, Closed, Date, MagnitudeValue, MagnitudeUnit) VALUES (@PropertyId, @Title, @Description, @Link, @Closed, @Date, @MagnitudeValue, @MagnitudeUnit)";
                 using (var command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@IdSource", source.id);
-                    command.Parameters.AddWithValue("@UrlSource", source.url);
+                    command.Parameters.AddWithValue("@PropertyId", property.id);
+                    command.Parameters.AddWithValue("@Title", property.title);
+                    command.Parameters.AddWithValue("@Description", (object)property.description ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Link", property.link);
+                    command.Parameters.AddWithValue("@Closed", (object)property.closed ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Date", property.date);
+                    command.Parameters.AddWithValue("@MagnitudeValue", property.magnitudeValue);
+                    command.Parameters.AddWithValue("@MagnitudeUnit", (object)property.magnitudeUnit ?? DBNull.Value);
 
                     await command.ExecuteNonQueryAsync();
                 }
             }
+            //Pendiente de implementar métodos para insertar las listas de categorías y fuentes
         }
 
-        public async Task UpdateAsync(Source source)
+        public async Task UpdateAsync(Property property)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
 
-                string query = "UPDATE Sources SET Url = @UrlSource WHERE Id = @IdSource";
+                string query = "UPDATE Properties SET Title = @Title, Description = @Description, Link = @Link, Closed = @Closed, Date = @Date, MagnitudeValue = @MagnitudeValue, MagnitudeUnit = @MagnitudeUnit WHERE PropertyId = @PropertyId";
                 using (var command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@IdSource", source.id);
-                    command.Parameters.AddWithValue("@UrlSource", source.url);
+                    command.Parameters.AddWithValue("@PropertyId", property.id);
+                    command.Parameters.AddWithValue("@Title", property.title);
+                    command.Parameters.AddWithValue("@Description", (object)property.description ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Link", property.link);
+                    command.Parameters.AddWithValue("@Closed", (object)property.closed ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Date", property.date);
+                    command.Parameters.AddWithValue("@MagnitudeValue", property.magnitudeValue);
+                    command.Parameters.AddWithValue("@MagnitudeUnit", (object)property.magnitudeUnit ?? DBNull.Value);
 
                     await command.ExecuteNonQueryAsync();
                 }
             }
         } 
+        
         public async Task DeleteAsync(string id)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
 
-                string query = "DELETE FROM Sources WHERE Id = @IdGeometry";
+                string query = "DELETE FROM Properties WHERE PropertyId = @PropertyId";
                 using (var command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@IdSource", id);
+                    command.Parameters.AddWithValue("@PropertyId", id);
 
                     await command.ExecuteNonQueryAsync();
                 }
@@ -148,43 +162,31 @@ namespace Reto_0_Backend.Repositories
 
         // MÉTODOS PARA TABLAS CRUZADAS
 
-        // PropertySources
-        public async Task<List<Source>> GetAllByPropertyAsync(string propertyId)
+        // FeatureProperties
+        public async Task<List<Property>> GetAllPropertiesByFeatureAsync(string featureId)
         {
-            var sources = new List<Source>();
+            var properties = new List<Property>();
 
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
 
-                string query = "SELECT Id, Url FROM Sources WHERE Id = @Id";
+                string query = "SELECT PropertyId FROM FeatureProperties WHERE FeatureId = @FeatureId";
                 using (var command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@Id", id);
+                    command.Parameters.AddWithValue("@FeatureId", featureId);
 
                     using (var reader = await command.ExecuteReaderAsync())
                     {
-                        if (await reader.ReadAsync())
+                        while (await reader.ReadAsync())
                         {
-                            source = new Source
-                            {
-                                id = reader.GetString(0),
-                                url = reader.GetString(1)
-                            };   
-                            
+                            Property property = await GetByIdAsync(reader.GetString(0));
+                            properties.Add(property);
                         }
                     }
                 }
             }
-            return source;
+            return properties;
         }
-
-
-        
-
     }
-
-
-
-
 }

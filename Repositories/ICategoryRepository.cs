@@ -1,24 +1,19 @@
 using Reto_0_Backend.Models;
 
-namespace Reto_0_Backend.Repositories;
+namespace Reto_0_Backend.Repositories
 {
 
     public interface ICategoryRepository
     {
         Task<List<Category>> GetAllAsync();
         Task<Category?> GetByIdAsync(string id);
-        Task AddAsync(Category plato);
-        Task UpdateAsync(Category plato);
+        Task AddAsync(Category category);
+        Task UpdateAsync(Category category);
         Task DeleteAsync(string id);
-        //Task InicializarDatosAsync();
 
         //Métodos para tablas cruzadas
         Task<List<Category>> GetAllCategoriesByPropertyAsync(string propertyId);
-        Task<List<Category>> GetAllCategoriesByEventyAsync(string propertyId);
-        
-
+        Task<List<Category>> GetAllCategoriesByEventAsync(string eventId);
     }
-
-
 
 }

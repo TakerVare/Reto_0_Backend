@@ -41,8 +41,6 @@ namespace Reto_0_Backend.Repositories
                 }
             }
             return geometries;
-
-
         }
 
 
@@ -67,10 +65,8 @@ namespace Reto_0_Backend.Repositories
                             {
                                 id = reader.GetString(0),
                                 type = reader.GetString(1),
-                                coordinates[0] = reader.GetDouble(2),
-                                coordinates[1] = reader.GetDouble(3)
+                                coordinates = new double[] { reader.GetDouble(2), reader.GetDouble(3) }
                             };
-
                         }
                     }
                 }
@@ -103,7 +99,7 @@ namespace Reto_0_Backend.Repositories
             {
                 await connection.OpenAsync();
 
-                string query = "UPDATE Geometries SET Type = @TypeGeometry, Longitude = @LongitudeGeometry, Latitude = @DescriptionCategory WHERE Id = @IdGeometry";
+                string query = "UPDATE Geometries SET Type = @TypeGeometry, Longitude = @LongitudeGeometry, Latitude = @LatitudeGeometry WHERE Id = @IdGeometry";
                 using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@IdGeometry", geometry.id);
@@ -115,6 +111,7 @@ namespace Reto_0_Backend.Repositories
                 }
             }
         }
+        
         public async Task DeleteAsync(string id)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -149,23 +146,15 @@ namespace Reto_0_Backend.Repositories
 
                     using (var reader = await command.ExecuteReaderAsync())
                     {
-                        Geometry geometry = null;
                         while (await reader.ReadAsync())
                         {
-                            geometry = await GetByIdAsync(reader.GetString(0));
+                            Geometry geometry = await GetByIdAsync(reader.GetString(0));
                             geometries.Add(geometry);
-                                                        
                         }
                     }
                 }
             }
             return geometries;
         }
-
-
     }
-
-
-
-
 }

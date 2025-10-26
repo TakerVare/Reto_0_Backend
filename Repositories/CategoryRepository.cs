@@ -43,8 +43,6 @@ namespace Reto_0_Backend.Repositories
                 }
             }
             return categories;
-
-
         }
         
 
@@ -120,6 +118,7 @@ namespace Reto_0_Backend.Repositories
                 }
             }
         } 
+        
         public async Task DeleteAsync(string id)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -151,13 +150,12 @@ namespace Reto_0_Backend.Repositories
                 using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@PropertyId", propertyId);
-                    Category category = null;
+                    
                     using (var reader = await command.ExecuteReaderAsync())
                     {
-                        if (await reader.ReadAsync())
+                        while (await reader.ReadAsync())
                         {
-                            category = await GetByIdAsync(reader.GetString(0));
-
+                            Category category = await GetByIdAsync(reader.GetString(0));
                             categories.Add(category);
                         }
                     }
@@ -166,7 +164,7 @@ namespace Reto_0_Backend.Repositories
             return categories;
         }
         
-        public async Task<List<Category>> GetAllCategoriesByEventyAsync(string eventId)
+        public async Task<List<Category>> GetAllCategoriesByEventAsync(string eventId)
         {
             var categories = new List<Category>();
 
@@ -178,13 +176,12 @@ namespace Reto_0_Backend.Repositories
                 using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@EventId", eventId);
-                    Category category = null;
+                    
                     using (var reader = await command.ExecuteReaderAsync())
                     {
                         while (await reader.ReadAsync())
                         {
-                            category = await GetByIdAsync(reader.GetString(0));
-                               
+                            Category category = await GetByIdAsync(reader.GetString(0));
                             categories.Add(category);
                         }
                     }
@@ -192,11 +189,5 @@ namespace Reto_0_Backend.Repositories
             }
             return categories;
         }
-        
-
     }
-
-
-
-
 }

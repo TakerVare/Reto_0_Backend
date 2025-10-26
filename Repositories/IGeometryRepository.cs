@@ -1,6 +1,6 @@
 using Reto_0_Backend.Models;
 
-namespace Reto_0_Backend.Repositories;
+namespace Reto_0_Backend.Repositories
 {
 
     public interface IGeometryRepository
@@ -10,13 +10,9 @@ namespace Reto_0_Backend.Repositories;
         Task AddAsync(Geometry geometry);
         Task UpdateAsync(Geometry geometry);
         Task DeleteAsync(string id);
-        //Task InicializarDatosAsync();
         
-
         //Métodos para tablas cruzadas
         Task<List<Geometry>> GetAllGeometryByEventAsync(string eventId);
     }
-
-
 
 }
