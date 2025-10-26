@@ -3,7 +3,7 @@ using Reto_0_Backend.Models;
 
 namespace Reto_0_Backend.Repositories
 {
-    
+
     public class GeometryRepository : IGeometryRepository
     {
 
@@ -33,8 +33,7 @@ namespace Reto_0_Backend.Repositories
                             {
                                 id = reader.GetString(0),
                                 type = reader.GetString(1),
-                                coordinates[0] = reader.GetDouble(2),
-                                coordinates[1] = reader.GetDouble(3)
+                                coordinates= [reader.GetDouble(2) , reader.GetDouble(3)]
                             };
 
                             geometries.Add(geometry);
@@ -45,7 +44,7 @@ namespace Reto_0_Backend.Repositories
 
 
         }
-        
+
 
         public async Task<Category> GetByIdAsync(string id)
         {
@@ -70,8 +69,8 @@ namespace Reto_0_Backend.Repositories
                                 type = reader.GetString(1),
                                 coordinates[0] = reader.GetDouble(2),
                                 coordinates[1] = reader.GetDouble(3)
-                            };   
-                            
+                            };
+
                         }
                     }
                 }
@@ -115,7 +114,7 @@ namespace Reto_0_Backend.Repositories
                     await command.ExecuteNonQueryAsync();
                 }
             }
-        } 
+        }
         public async Task DeleteAsync(string id)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -133,7 +132,36 @@ namespace Reto_0_Backend.Repositories
         }
 
 
-        
+        //métodos para tablas cruzadas
+        public async Task<List<Geometry>> GetAllGeometryByEventAsync(string eventId)
+        {
+            var geometries = new List<Geometry>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                string query = "SELECT GeometryId FROM EventGeometries WHERE EventId = @EventId";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@EventId", eventId);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        Geometry geometry = null;
+                        while (await reader.ReadAsync())
+                        {
+                            geometry = await GetByIdAsync(reader.ReadAsync(0));
+                            geometries.Add(geometry);
+                                                        
+                        }
+                    }
+                }
+            }
+            return geometries;
+        }
+
 
     }
 

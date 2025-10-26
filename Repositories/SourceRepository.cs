@@ -147,6 +147,36 @@ namespace Reto_0_Backend.Repositories
                         {
                             Source source = await GetByIdAsync(reader.GetString(0));
                             sources.Add(source);
+
+
+                        }
+                    }
+                }
+            }
+            return sources;
+        }
+        
+
+        // EventSources
+        public async Task<List<Source>> GetAllSourcesByEventAsync(string eventId)
+        {
+            var sources = new List<Source>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                string query = "SELECT SourceId FROM EventSources WHERE EventId = @EventId";
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@EventId", eventId);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            Source source = await GetByIdAsync(reader.GetString(0));
+                            sources.Add(source);
                                
                             
                         }

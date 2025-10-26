@@ -11,11 +11,12 @@ namespace Reto_0_Backend.Repositories;
         Task UpdateAsync(Source geometry);
         Task DeleteAsync(string id);
         //Task InicializarDatosAsync();
-        
+
         //Métodos para tablas cruzadas
         //Task<List<Source>> GetAllByPropertyAsync(string propertyId);
 
         Task<List<Source>> GetAllSourcesByPropertyAsync(string propertyId);
+        Task<List<Source>> GetAllSourcesByEventAsync(string eventId);
         
 
     }

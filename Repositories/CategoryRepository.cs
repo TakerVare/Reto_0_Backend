@@ -181,7 +181,7 @@ namespace Reto_0_Backend.Repositories
                     Category category = null;
                     using (var reader = await command.ExecuteReaderAsync())
                     {
-                        if (await reader.ReadAsync())
+                        while (await reader.ReadAsync())
                         {
                             category = await GetByIdAsync(reader.GetString(0));
                                

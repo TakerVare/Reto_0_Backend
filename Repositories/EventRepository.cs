@@ -8,10 +8,19 @@ namespace Reto_0_Backend.Repositories
     {
 
         private readonly string _connectionString;
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly ISourceRepository _sourceRepository;
+        private readonly IGeometryRepository _geometryRepository;
 
-        public EventRepository(string connectionString)
+        public EventRepository(string connectionString, 
+                             ICategoryRepository categoryRepository,
+                             ISourceRepository sourceRepository,
+                             IGeometryRepository geometryRepository)
         {
             _connectionString = connectionString;
+            _categoryRepository = categoryRepository;
+            _sourceRepository = sourceRepository;
+            _geometryRepository = geometryRepository;
         }
 
         public async Task<List<Evento>> GetAllAsync()
@@ -36,13 +45,9 @@ namespace Reto_0_Backend.Repositories
                                 description = reader.GetString(2),
                                 link = reader.GetString(3),
                                 closed = reader.GetString(4),
-                                categories = await GetAllCategoriesByEventyAsync(reader.GetString(0)),
-                                //Todo
-                                /*
-                                categories = getCategoriesByEventId()
-                                sources = getSourcesByEventId()
-                                geometry = getGeometryByEventId()
-                                */
+                                categories = await _categoryRepository.GetAllCategoriesByEventyAsync(reader.GetString(0)),
+                                sources = await _sourceRepository.GetAllSourcesByEventAsync(reader.GetString(0)),
+                                geometry = await _geometryRepository.GetAllGeometryByEventAsync(reader.GetString(0))                                
                             };
 
                             events.Add(evento);
@@ -79,11 +84,9 @@ namespace Reto_0_Backend.Repositories
                                 description = reader.GetString(2),
                                 link = reader.GetString(3),
                                 closed = reader.GetString(4),
-                                categories = await GetAllCategoriesByEventyAsync(reader.GetString(0)),
-                                
-                                sources = getSourcesByEventId()
-                                geometry = getGeometryByEventId()
-                                */
+                                categories = await _categoryRepository.GetAllCategoriesByEventyAsync(reader.GetString(0)),
+                                sources = await _sourceRepository.GetAllSourcesByEventAsync(reader.GetString(0)),
+                                geometry = await _geometryRepository.GetAllGeometryByEventAsync(reader.GetString(0)) 
                             };   
                             
                         }
@@ -99,34 +102,34 @@ namespace Reto_0_Backend.Repositories
             {
                 await connection.OpenAsync();
 
-                string query = "INSERT INTO Categories (IdCategory, TitleCategory, LinkCategory, DescriptionCategory, LayersCategory) VALUES (@IdCategory, @TitleCategory, @LinkCategory, @DescriptionCategory, @LayersCategory)";
+                string query = "INSERT INTO Events (Id, Title, DescriptionEvent, Link, Closed) VALUES (@Id, @Title, @DescriptionEvent, @Link, @Closed)";
                 using (var command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@IdCategory", category.idCategory);
-                    command.Parameters.AddWithValue("@TitleCategory", category.titleCategory);
-                    command.Parameters.AddWithValue("@LinkCategory", category.linkCategory);
-                    command.Parameters.AddWithValue("@DescriptionCategory", category.descriptionCategory);
-                    command.Parameters.AddWithValue("@LayersCategory", category.layersCategory);
-
+                    command.Parameters.AddWithValue("@Id", evento.id);
+                    command.Parameters.AddWithValue("@Title", evento.title);
+                    command.Parameters.AddWithValue("@DescriptionEvent", evento.description);
+                    command.Parameters.AddWithValue("@Link", evento.link);
+                    command.Parameters.AddWithValue("@Closed", evento.closed);
+                    //Pendiente de implementar métodos para insertar las listas de categorías, fuentes y geometrías
                     await command.ExecuteNonQueryAsync();
                 }
             }
         }
 
-        public async Task UpdateAsync(Category category)
+        public async Task UpdateAsync(Evento evento)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
 
-                string query = "UPDATE Categories SET TitleCategory = @TitleCategory, LinkCategory = @LinkCategory, DescriptionCategory = @DescriptionCategory, LayersCategory = @LayersCategory WHERE IdCategory = @IdCategory";
+                string query = "UPDATE Events SET Title = @Title, DescriptionEvent = @DescriptionEvent, Link = @Link, Closed = @Closed WHERE IdCategory = @IdCategory";
                 using (var command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@IdCategory", category.idCategory);
-                    command.Parameters.AddWithValue("@TitleCategory", category.titleCategory);
-                    command.Parameters.AddWithValue("@LinkCategory", category.linkCategory);
-                    command.Parameters.AddWithValue("@DescriptionCategory", category.descriptionCategory);
-                    command.Parameters.AddWithValue("@LayersCategory", category.layersCategory);
+                    command.Parameters.AddWithValue("@IdCategory", evento.id);
+                    command.Parameters.AddWithValue("@Title", evento.title);
+                    command.Parameters.AddWithValue("@DescriptionEvent", evento.description);
+                    command.Parameters.AddWithValue("@Link", evento.link);
+                    command.Parameters.AddWithValue("@Closed", evento.closed);
 
                     await command.ExecuteNonQueryAsync();
                 }
@@ -138,10 +141,10 @@ namespace Reto_0_Backend.Repositories
             {
                 await connection.OpenAsync();
 
-                string query = "DELETE FROM Categories WHERE IdCategory = @IdCategory";
+                string query = "DELETE FROM Events WHERE Id = @Id";
                 using (var command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@IdCategory", id);
+                    command.Parameters.AddWithValue("@Id", id);
 
                     await command.ExecuteNonQueryAsync();
                 }
@@ -149,25 +152,8 @@ namespace Reto_0_Backend.Repositories
         }
 
         /*
-        Cambio de idea, se llamará a estos métodos desde sus correspondientes repositorios
-        public async Task<List<Category>> getCategoriesByEventId(string eventId)
-        {
-            //Implementar metodo para obtener las categorias de un evento
-            throw new NotImplementedException();
-        }
-
-        public async Task<List<Source>> getSourcesByEventId(string eventId)
-        {
-            //Implementar metodo para obtener las categorias de un evento
-            throw new NotImplementedException();
-        }
+        Aquí irán los métodos para tablas cruzadas crear registros en las tablas intermedias entre eventos y categorías, fuentes y geometrías
         
-        public async Task<List<Geometry>> getGeometryByEventId(string eventId)
-        {
-            //Implementar metodo para obtener las categorias de un evento
-            throw new NotImplementedException();
-        }
-
         */
 
     }
