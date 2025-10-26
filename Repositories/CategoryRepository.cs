@@ -139,7 +139,7 @@ namespace Reto_0_Backend.Repositories
 
 
         //métodos para tablas cruzadas
-        Task<List<Category>> GetAllCategoriesByPropertyAsync(string propertyId)
+        public async Task<List<Category>> GetAllCategoriesByPropertyAsync(string propertyId)
         {
             var categories = new List<Category>();
 
@@ -151,12 +151,39 @@ namespace Reto_0_Backend.Repositories
                 using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@PropertyId", propertyId);
-
+                    Category category = null;
                     using (var reader = await command.ExecuteReaderAsync())
                     {
                         if (await reader.ReadAsync())
                         {
-                            category = GetByIdAsync(reader.GetString(0));
+                            category = await GetByIdAsync(reader.GetString(0));
+
+                            categories.Add(category);
+                        }
+                    }
+                }
+            }
+            return categories;
+        }
+        
+        public async Task<List<Category>> GetAllCategoriesByEventyAsync(string eventId)
+        {
+            var categories = new List<Category>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                string query = "SELECT CategoryId FROM EventCategories WHERE EventId = @EventId";
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@EventId", eventId);
+                    Category category = null;
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            category = await GetByIdAsync(reader.GetString(0));
                                
                             categories.Add(category);
                         }

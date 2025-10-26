@@ -128,7 +128,7 @@ namespace Reto_0_Backend.Repositories
         // MÉTODOS PARA TABLAS CRUZADAS
 
         // PropertySources
-        public async Task<List<Source>> GetAllByPropertyAsync(string propertyId)
+        public async Task<List<Source>> GetAllSourcesByPropertyAsync(string propertyId)
         {
             var sources = new List<Source>();
 
@@ -136,55 +136,27 @@ namespace Reto_0_Backend.Repositories
             {
                 await connection.OpenAsync();
 
-                string query = "SELECT Id, Url FROM Sources WHERE Id = @Id";
+                string query = "SELECT SourceId FROM PropertySources WHERE PropertyId = @PropertyId";
                 using (var command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@Id", id);
+                    command.Parameters.AddWithValue("@PropertyId", propertyId);
 
                     using (var reader = await command.ExecuteReaderAsync())
                     {
                         if (await reader.ReadAsync())
                         {
-                            source = new Source
-                            {
-                                id = reader.GetString(0),
-                                url = reader.GetString(1)
-                            };   
-                            
-                        }
-                    }
-                }
-            }
-            return source;
-        }
-
-        Task<List<Source>> GetAllSourcesByPropertyAsync(string propertyId){
-
-            var sources = new List<Source>();
-
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-
-                string query = "SELECT SourceId FROM PropertySources WHERE PropertyId = @Id";
-                using (var command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", id);
-
-                    using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        if (await reader.ReadAsync())
-                        {
-                            source = GetByIdAsync(reader.GetString(0));
-                            sources.Add(source);  
+                            Source source = await GetByIdAsync(reader.GetString(0));
+                            sources.Add(source);
+                               
                             
                         }
                     }
                 }
             }
             return sources;
-
         }
+
+        
 
 
         

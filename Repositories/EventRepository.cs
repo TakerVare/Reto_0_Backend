@@ -35,7 +35,8 @@ namespace Reto_0_Backend.Repositories
                                 title = reader.GetString(1),
                                 description = reader.GetString(2),
                                 link = reader.GetString(3),
-                                closed = reader.GetString(4)
+                                closed = reader.GetString(4),
+                                categories = await GetAllCategoriesByEventyAsync(reader.GetString(0)),
                                 //Todo
                                 /*
                                 categories = getCategoriesByEventId()
@@ -77,10 +78,9 @@ namespace Reto_0_Backend.Repositories
                                 title = reader.GetString(1),
                                 description = reader.GetString(2),
                                 link = reader.GetString(3),
-                                closed = reader.GetString(4)
-                                //Todo
-                                /*
-                                categories = getCategoriesByEventId()
+                                closed = reader.GetString(4),
+                                categories = await GetAllCategoriesByEventyAsync(reader.GetString(0)),
+                                
                                 sources = getSourcesByEventId()
                                 geometry = getGeometryByEventId()
                                 */
