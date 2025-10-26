@@ -45,7 +45,7 @@ CREATE TABLE Geometries (
 CREATE TABLE Events (
     Id VARCHAR(50) PRIMARY KEY,
     Title VARCHAR(255) NOT NULL,
-    Description TEXT NULL,
+    DescriptionEvent TEXT NULL,
     Link VARCHAR(500),
     Closed VARCHAR(50) NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

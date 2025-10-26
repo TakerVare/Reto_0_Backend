@@ -33,7 +33,7 @@ namespace Reto_0_Backend.Repositories
                             {
                                 id = reader.GetString(0),
                                 type = reader.GetString(1),
-                                coordinates= [reader.GetDouble(2) , reader.GetDouble(3)]
+                                coordinates = new double[] { reader.GetDouble(2), reader.GetDouble(3) }
                             };
 
                             geometries.Add(geometry);
@@ -46,7 +46,7 @@ namespace Reto_0_Backend.Repositories
         }
 
 
-        public async Task<Category> GetByIdAsync(string id)
+        public async Task<Geometry> GetByIdAsync(string id)
         {
             Geometry geometry = null;
 
@@ -141,7 +141,7 @@ namespace Reto_0_Backend.Repositories
             {
                 await connection.OpenAsync();
 
-                string query = "SELECT GeometryId FROM EventGeometries WHERE EventId = @EventId";
+                string query = "SELECT GeometryId FROM EventGeometries WHERE EventId = @EventId ORDER BY SequenceOrder";
 
                 using (var command = new SqlCommand(query, connection))
                 {
@@ -152,7 +152,7 @@ namespace Reto_0_Backend.Repositories
                         Geometry geometry = null;
                         while (await reader.ReadAsync())
                         {
-                            geometry = await GetByIdAsync(reader.ReadAsync(0));
+                            geometry = await GetByIdAsync(reader.GetString(0));
                             geometries.Add(geometry);
                                                         
                         }
