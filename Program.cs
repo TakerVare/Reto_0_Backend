@@ -5,8 +5,51 @@ using Reto_0_Backend.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("EonetDB");
 
+// =============================================
+// REGISTRAR REPOSITORIOS
+// =============================================
+
+// Repositorios sin dependencias
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>(provider =>
-new CategoryRepository(connectionString));
+    new CategoryRepository(connectionString));
+
+builder.Services.AddScoped<ISourceRepository, SourceRepository>(provider =>
+    new SourceRepository(connectionString));
+
+builder.Services.AddScoped<IGeometryRepository, GeometryRepository>(provider =>
+    new GeometryRepository(connectionString));
+
+builder.Services.AddScoped<ILayerParametersRepository, LayerParametersRepository>(provider =>
+    new LayerParametersRepository(connectionString));
+
+// Repositorios con dependencias
+builder.Services.AddScoped<IPropertyRepository, PropertyRepository>(provider =>
+{
+    var categoryRepo = provider.GetRequiredService<ICategoryRepository>();
+    var sourceRepo = provider.GetRequiredService<ISourceRepository>();
+    return new PropertyRepository(connectionString, categoryRepo, sourceRepo);
+});
+
+builder.Services.AddScoped<IEventRepository, EventRepository>(provider =>
+{
+    var categoryRepo = provider.GetRequiredService<ICategoryRepository>();
+    var sourceRepo = provider.GetRequiredService<ISourceRepository>();
+    var geometryRepo = provider.GetRequiredService<IGeometryRepository>();
+    return new EventRepository(connectionString, categoryRepo, sourceRepo, geometryRepo);
+});
+
+builder.Services.AddScoped<IFeatureRepository, FeatureRepository>(provider =>
+{
+    var propertyRepo = provider.GetRequiredService<IPropertyRepository>();
+    var geometryRepo = provider.GetRequiredService<IGeometryRepository>();
+    return new FeatureRepository(connectionString, propertyRepo, geometryRepo);
+});
+
+builder.Services.AddScoped<ILayerRepository, LayerRepository>(provider =>
+{
+    var layerParamsRepo = provider.GetRequiredService<ILayerParametersRepository>();
+    return new LayerRepository(connectionString, layerParamsRepo);
+});
 
 // Añadir política CORS
 builder.Services.AddCors(options =>
