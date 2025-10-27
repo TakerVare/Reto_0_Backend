@@ -8,75 +8,82 @@ using System.Text.Json;
 namespace Reto_0_Backend.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class CategoryController : ControllerBase
 {
+    private static List<Category> categories = new List<Category>();
+    private readonly ICategoryRepository _categoryRepository;
+
+    /*
     private readonly DataCollectionExample _dataCollection;
     private readonly ILogger<CategoryController> _logger;
+    */
 
+    /*
     public CategoryController(ILogger<CategoryController> logger, DataCollectionExample dataCollection)
     {
         _logger = logger;
         _dataCollection = dataCollection;
     }
+    */
+
+    public  CategoryController(ICategoryRepository repository){
+        _repository = repository;
+    }
 
     [HttpGet]
-    public ActionResult GetCategory()
+    public async Task<ActionResult<List<Category>>> GetCategory()
     {
-        // ✅ CAMBIO: Devolver con la estructura { categories: [...] }
-        return Ok(new 
-        { 
-            title = "EONET Categories",
-            description = "Natural event categories from EONET.",
-            link = "http://localhost:5229/category",
-            categories = _dataCollection.CategoryCollectionList 
-        });
+        var categories = await _repository.GetAllAsync();
+        return Ok(categories);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Category> GetCategory(string id)
+    public async Task<ActionResult<Category>> GetCategory(string id)
     {
-        var Category = _dataCollection.CategoryCollectionList.FirstOrDefault(cat => cat.idCategory == id);
-        if (Category == null)
+        var category = await _repository.GetByIdAsync(id);
+        if (category == null)
         {
             return NotFound();
         }
-        return Ok(Category);
+        return Ok(category);
     }
 
     [HttpPost]
-    public ActionResult<Category> CreateCategory(Category newCategory)
+    public async Task<ActionResult<Category>> CreateCategory(Category newCategory)
     {
+        await _repository.AddAsync(newCategory);
+        
         _dataCollection.CategoryCollectionList.Add(newCategory);
         return CreatedAtAction(nameof(GetCategory), new { id = newCategory.idCategory }, newCategory);
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateCategory(string id, Category updatedCategory)
+    public async Task<IActionResult> UpdateCategory(string id, Category updatedCategory)
     {
-        var category = _dataCollection.CategoryCollectionList.FirstOrDefault(cat => cat.idCategory == id);
-        if (category == null)
+        var existingCategory = await _repository.GetByIdAsync(id);
+        if (existingCategory == null)
         {
             return NotFound();
         }
-        category.idCategory = updatedCategory.idCategory;
-        category.titleCategory = updatedCategory.titleCategory;
-        category.linkCategory = updatedCategory.linkCategory;
-        category.descriptionCategory = updatedCategory.descriptionCategory;
-        category.layersCategory = updatedCategory.layersCategory;
+        existingCategory.idCategory = updatedCategory.idCategory;
+        existingCategory.titleCategory = updatedCategory.titleCategory;
+        existingCategory.linkCategory = updatedCategory.linkCategory;
+        existingCategory.descriptionCategory = updatedCategory.descriptionCategory;
+        existingCategory.layersCategory = updatedCategory.layersCategory;
 
         return NoContent();
     }
     
     [HttpDelete("{id}")]
-    public IActionResult DeleteCategory(string id)
+    public async Task<IActionResult> DeleteCategory(string id)
     {
-        var category = _dataCollection.CategoryCollectionList.FirstOrDefault(cat => cat.idCategory == id);
+        var category = awit _repository.GetByIdAsync(id);
         if (category == null)
         {
             return NotFound();
         }
-        _dataCollection.CategoryCollectionList.Remove(category);
+        await _repository.DeleteAsync(id);
         return NoContent();
     }
 }
