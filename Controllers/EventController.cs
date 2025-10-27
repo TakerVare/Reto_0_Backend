@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Reto_0_Backend.Models;
+using Reto_0_Backend.Repositories;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,9 +9,14 @@ using System.Text.Json;
 namespace Reto_0_Backend.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class EventController : ControllerBase
 {
+
+    private static List<Evento> events = new List<Evento>();
+    private readonly IEventRepository _repository;
+
+    /*
     private readonly DataCollectionExample _dataCollection;
     private readonly ILogger<EventController> _logger;
 
@@ -19,43 +25,42 @@ public class EventController : ControllerBase
         _logger = logger;
         _dataCollection = dataCollection;
     }
+    */
+
+    public EventController(IEventRepository repository) {
+        _repository = repository;
+    }
+
 
     [HttpGet]
-    public ActionResult GetEvent()
+    public async Task<ActionResult<List<Evento>>> GetEvent()
     {
-        // ✅ CAMBIO IMPORTANTE: Devolver con la estructura { events: [...] }
-        // para coincidir con la API de NASA EONET
-        return Ok(new 
-        { 
-            title = "EONET Events",
-            description = "Natural events from EONET.",
-            link = "http://localhost:5229/event",
-            events = _dataCollection.EventCollectionList 
-        });
+        var events = await _repository.GetAllAsync();
+        return Ok(events);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Evento> GetEvent(string id)
+    public async Task<ActionResult<Evento>> GetEvent(string id)
     {
-        var Evento = _dataCollection.EventCollectionList.FirstOrDefault(even => even.id == id);
-        if (Evento == null)
+        var evento = await _repository.GetByIdAsync(id);
+        if (evento == null)
         {
             return NotFound();
         }
-        return Ok(Evento);
+        return Ok(evento);
     }
 
     [HttpPost]
-    public ActionResult<Evento> CreateEvent(Evento newEvent)
+    public async Task<ActionResult<Evento>> CreateEvent(Evento newEvent)
     {
-        _dataCollection.EventCollectionList.Add(newEvent);
+        await _repository.AddAsync(newEvent);
         return CreatedAtAction(nameof(GetEvent), new { id = newEvent.id }, newEvent);
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateEvent(string id, Evento updatedEvent)
+    public async Task<IActionResult> UpdateEvent(string id, Evento updatedEvent)
     {
-        var existingEvent = _dataCollection.EventCollectionList.FirstOrDefault(even => even.id == id);
+        var existingEvent = await _repository.GetByIdAsync(id);
         if (existingEvent == null)
         {
             return NotFound();
@@ -69,18 +74,19 @@ public class EventController : ControllerBase
         existingEvent.sources = updatedEvent.sources;
         existingEvent.geometry = updatedEvent.geometry;
 
+        await _repository.UpdateAsync(existingEvent);
         return NoContent();
     }
-    
+
     [HttpDelete("{id}")]
-    public IActionResult DeleteEvent(string id)
+    public async Task<IActionResult> DeleteEvent(string id)
     {
-        var deleteEvent = _dataCollection.EventCollectionList.FirstOrDefault(even => even.id == id);
+        var deleteEvent = await _repository.GetByIdAsync(id);
         if (deleteEvent == null)
         {
             return NotFound();
         }
-        _dataCollection.EventCollectionList.Remove(deleteEvent);
+        await _repository.DeleteAsync(id);
         return NoContent();
-    }
+    } 
 }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Reto_0_Backend.Models;
+using Reto_0_Backend.Repositories;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Reto_0_Backend.Controllers;
 public class CategoryController : ControllerBase
 {
     private static List<Category> categories = new List<Category>();
-    private readonly ICategoryRepository _categoryRepository;
+    private readonly ICategoryRepository _repository;
 
     /*
     private readonly DataCollectionExample _dataCollection;
@@ -27,7 +28,9 @@ public class CategoryController : ControllerBase
     }
     */
 
-    public  CategoryController(ICategoryRepository repository){
+
+
+    public CategoryController(ICategoryRepository repository) {
         _repository = repository;
     }
 
@@ -53,8 +56,6 @@ public class CategoryController : ControllerBase
     public async Task<ActionResult<Category>> CreateCategory(Category newCategory)
     {
         await _repository.AddAsync(newCategory);
-        
-        _dataCollection.CategoryCollectionList.Add(newCategory);
         return CreatedAtAction(nameof(GetCategory), new { id = newCategory.idCategory }, newCategory);
     }
 
@@ -78,7 +79,7 @@ public class CategoryController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCategory(string id)
     {
-        var category = awit _repository.GetByIdAsync(id);
+        var category = await _repository.GetByIdAsync(id);
         if (category == null)
         {
             return NotFound();
