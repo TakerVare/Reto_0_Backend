@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Reto_0_Backend.Models;
+using Reto_0_Backend.Repositories;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,30 +10,30 @@ using System.Text.Json;
 namespace Reto_0_Backend.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class LayerParametersController : ControllerBase
 {
-    private readonly ILogger<LayerParameters> _logger;
+    private static List<LayerParameters> layerParameters = new List<LayerParameters>();
+    private readonly ILayerParametersRepository _repository;
 
-    public LayerParametersController(ILogger<LayerParameters> logger)
+
+    public LayerParametersController(ILayerParametersRepository repository)
     {
-        _logger = logger;
+        _repository = repository;
     }
-
-    // Nota: LayerParameters no tiene lista en DataCollectionExample,
-    // ya que se usan dentro de Layers
-    private static List<LayerParameters> layersParameters = new List<LayerParameters>();
+    
 
     [HttpGet]
-    public ActionResult<IEnumerable<LayerParameters>> GetLayerParameters()
+    public async Task<ActionResult<List<LayerParameters>>> GetLayerParameters()
     {
-        return Ok(layersParameters);
+        var layerParameters = await _repository.GetAllAsync();
+        return Ok(layerParameters);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<LayerParameters> GetLayerParameters(string id)
+    public async Task<ActionResult<LayerParameters>> GetLayerParameters(string id)
     {
-        var layerParameter = layersParameters.FirstOrDefault(l => l.id == id);
+        var layerParameter = await _repository.GetByIdAsync(id);
         if (layerParameter == null)
         {
             return NotFound();
@@ -42,16 +43,16 @@ public class LayerParametersController : ControllerBase
 
     
     [HttpPost]
-    public ActionResult<LayerParameters> CreateLayerParameters(LayerParameters newLayerParameters)
+    public async Task<ActionResult<LayerParameters>> CreateLayerParameters(LayerParameters newLayerParameters)
     {
-        layersParameters.Add(newLayerParameters);
-        return CreatedAtAction(nameof(GetLayerParameters), new { id = newLayerParameters.id }, newLayerParameters);
+        await _repository.AddAsync(newLayerParameters);
+        return CreatedAtAction(nameof(newLayerParameters), new { id = newLayerParameters.id }, newLayerParameters);
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateLayerParameters(string id, LayerParameters updatedLayerParameters)
+    public async Task<IActionResult> UpdateLayerParameters(string id, LayerParameters updatedLayerParameters)
     {
-        var existingLayerParameters = layersParameters.FirstOrDefault(l => l.id == id);
+        var existingLayerParameters = await _repository.GetByIdAsync(id);
         if (existingLayerParameters == null)
         {
             return NotFound();
@@ -63,14 +64,14 @@ public class LayerParametersController : ControllerBase
     }
     
     [HttpDelete("{id}")]
-    public IActionResult DeleteLayerParameters(string id)
+    public async Task<IActionResult> DeleteLayerParameters(string id)
     {
-        var deleteLayerParameters = layersParameters.FirstOrDefault(l => l.id == id);
+        var deleteLayerParameters = await _repository.GetByIdAsync(id);
         if (deleteLayerParameters == null)
         {
             return NotFound();
         }
-        layersParameters.Remove(deleteLayerParameters);
+        await _repository.DeleteAsync(id);
         return NoContent();
     }
 }
