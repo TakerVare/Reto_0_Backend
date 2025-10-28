@@ -29,23 +29,23 @@ public class FeatureController : ControllerBase
 
     private readonly IFeatureRepository _repository;
 
-    
-    public FeatureRepository(IFeatureRepository repository) {
+     public FeatureController(IFeatureRepository repository)
+    {
         _repository = repository;
     }
 
 
     [HttpGet]
-    public ActionResult<IEnumerable<Feature>> GetFeature()
+    public async Task<ActionResult<IEnumerable<Feature>>> GetFeature()
     {
         var features = await _repository.GetAllAsync();
         return Ok(features);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Feature> GetFeature(string id)
+    public async Task<ActionResult<Feature>> GetFeature(string id)
     {
-        var feature = _dataCollection.FeatureCollectionList.FirstOrDefault(f => f.id == id);
+        var feature = await _repository.GetByIdAsync(id);
         if (feature == null)
         {
             return NotFound();
@@ -55,16 +55,16 @@ public class FeatureController : ControllerBase
 
     
     [HttpPost]
-    public ActionResult<Feature> CreateFeature(Feature newFeature)
+    public async Task<ActionResult<Feature>> CreateFeature(Feature newFeature)
     {
-        _dataCollection.FeatureCollectionList.Add(newFeature);
+        await _repository.AddAsync(newFeature);
         return CreatedAtAction(nameof(GetFeature), new { id = newFeature.id }, newFeature);
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateFeature(string id, Feature updatedFeature)
+    public async Task<IActionResult> UpdateFeature(string id, Feature updatedFeature)
     {
-        var existingFeature = _dataCollection.FeatureCollectionList.FirstOrDefault(f => f.id == id);
+        var existingFeature = await _repository.GetByIdAsync(id);
         if (existingFeature == null)
         {
             return NotFound();
@@ -77,14 +77,14 @@ public class FeatureController : ControllerBase
     }
     
     [HttpDelete("{id}")]
-    public IActionResult DeleteFeature(string id)
+    public async Task<IActionResult> DeleteFeature(string id)
     {
-        var deleteFeature = _dataCollection.FeatureCollectionList.FirstOrDefault(f => f.id == id);
+        var deleteFeature = await _repository.GetByIdAsync(id);
         if (deleteFeature == null)
         {
             return NotFound();
         }
-        _dataCollection.FeatureCollectionList.Remove(deleteFeature);
+        await _repository.DeleteAsync(id);
         return NoContent();
     }
 }
