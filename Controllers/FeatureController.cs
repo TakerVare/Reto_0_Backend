@@ -36,7 +36,7 @@ public class FeatureController : ControllerBase
 
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Feature>>> GetFeature()
+    public async Task<ActionResult<List<Feature>>> GetFeature()
     {
         var features = await _repository.GetAllAsync();
         return Ok(features);
