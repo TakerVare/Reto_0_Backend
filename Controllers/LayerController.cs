@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Reto_0_Backend.Models;
+using Reto_0_Backend.Repositories;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,29 +10,29 @@ using System.Text.Json;
 namespace Reto_0_Backend.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class LayerController : ControllerBase
 {
-    private readonly DataCollectionExample _dataCollection;
-    private readonly ILogger<Layer> _logger;
+    private static List<Layer> layers = new List<Layer>();
+    private readonly ILayerRepository _repository;
 
-    public LayerController(ILogger<Layer> logger, DataCollectionExample dataCollection)
-    {
-        _logger = logger;
-        _dataCollection = dataCollection;
+    
+    public LayerController(ILayerRepository repository) {
+        _repository = repository;
     }
 
 
     [HttpGet]
-    public ActionResult<IEnumerable<Layer>> GetLayers()
+    public async Task<ActionResult<List<Layer>>> GetLayers()
     {
-        return Ok(_dataCollection.LayerCollectionList);
+        var layers = await _repository.GetAllAsync();
+        return Ok(layers);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Layer> GetLayer(string id)
+    public async Task<ActionResult<Layer>> GetLayer(string id)
     {
-        var layer = _dataCollection.LayerCollectionList.FirstOrDefault(l => l.id == id);
+        var layer = await _repository.GetByIdAsync(id);
         if (layer == null)
         {
             return NotFound();
@@ -41,16 +42,16 @@ public class LayerController : ControllerBase
 
 
     [HttpPost]
-    public ActionResult<Layer> CreateLayer(Layer newLayer)
+    public async Task<ActionResult<Layer>> CreateLayer(Layer newLayer)
     {
-        _dataCollection.LayerCollectionList.Add(newLayer);
-        return CreatedAtAction(nameof(GetLayer), new { id = newLayer.id }, newLayer);
+         await _repository.AddAsync(newLayer);
+        return CreatedAtAction(nameof(newLayer), new { id = newLayer.id }, newLayer);
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateLayer(string id, Layer updatedLayer)
+    public async Task<IActionResult> UpdateLayer(string id, Layer updatedLayer)
     {
-        var existingLayer = _dataCollection.LayerCollectionList.FirstOrDefault(l => l.id == id);
+        var existingLayer = await _repository.GetByIdAsync(id);
         if (existingLayer == null)
         {
             return NotFound();
@@ -64,14 +65,14 @@ public class LayerController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public IActionResult DeleteLayer(string id)
+    public async Task<IActionResult> DeleteLayer(string id)
     {
-        var deleteLayer = _dataCollection.LayerCollectionList.FirstOrDefault(l => l.id == id);
+        var deleteLayer = await _repository.GetByIdAsync(id);
         if (deleteLayer == null)
         {
             return NotFound();
         }
-        _dataCollection.LayerCollectionList.Remove(deleteLayer);
+        await _repository.DeleteAsync(id);
         return NoContent();
     }
 }
