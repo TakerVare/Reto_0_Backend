@@ -59,6 +59,7 @@ public class CategoryController : ControllerBase
         existingCategory.descriptionCategory = updatedCategory.descriptionCategory;
         existingCategory.layersCategory = updatedCategory.layersCategory;
 
+        await _repository.UpdateAsync(existingCategory);
         return NoContent();
     }
     

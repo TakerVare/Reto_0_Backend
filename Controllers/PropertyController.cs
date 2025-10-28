@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Reto_0_Backend.Models;
+using Reto_0_Backend.Repositories;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,30 +10,28 @@ using System.Text.Json;
 namespace Reto_0_Backend.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class PropertyController : ControllerBase
 {
-    private readonly ILogger<Property> _logger;
+    private static List<Property> properties = new List<Property>();
+    private readonly IPropertyRepository _repository;
 
-    public PropertyController(ILogger<Property> logger)
-    {
-        _logger = logger;
+    
+    public PropertyController(IPropertyRepository repository) {
+        _repository = repository;
     }
 
-    // Nota: Property no tiene lista en DataCollectionExample,
-    // ya que se usan dentro de Features
-    private static List<Property> properties = new List<Property>();
-
     [HttpGet]
-    public ActionResult<IEnumerable<Property>> GetProperties()
+    public async Task<ActionResult<List<Property>>> GetProperties()
     {
+        var properties = await _repository.GetAllAsync();
         return Ok(properties);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Property> GetProperty(string id)
+    public async Task<ActionResult<Property>> GetProperty(string id)
     {
-        var property = properties.FirstOrDefault(p => p.id == id);
+        var property = await _repository.GetByIdAsync(id);
         if (property == null)
         {
             return NotFound();
@@ -42,16 +41,16 @@ public class PropertyController : ControllerBase
 
     
     [HttpPost]
-    public ActionResult<Property> CreateProperty(Property newProperty)
+    public async Task<ActionResult<Property>> CreateProperty(Property newProperty)
     {
-        properties.Add(newProperty);
+        await _repository.AddAsync(newProperty);
         return CreatedAtAction(nameof(GetProperty), new { id = newProperty.id }, newProperty);
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateProperty(string id, Property updatedProperty)
+    public async Task<IActionResult> UpdateProperty(string id, Property updatedProperty)
     {
-        var existingProperty = properties.FirstOrDefault(p => p.id == id);
+        var existingProperty = await _repository.GetByIdAsync(id);
         if (existingProperty == null)
         {
             return NotFound();
@@ -66,18 +65,19 @@ public class PropertyController : ControllerBase
         existingProperty.magnitudeUnit = updatedProperty.magnitudeUnit;
         existingProperty.categories = updatedProperty.categories;
         existingProperty.sources = updatedProperty.sources;
+        await _repository.UpdateAsync(existingProperty);
         return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public IActionResult DeleteProperty(string id)
+    public async Task<IActionResult> DeleteProperty(string id)
     {
-        var deleteProperty = properties.FirstOrDefault(p => p.id == id);
+        var deleteProperty = await _repository.GetByIdAsync(id);
         if (deleteProperty == null)
         {
             return NotFound();
         }
-        properties.Remove(deleteProperty);
+        await _repository.DeleteAsync(id);
         return NoContent();
     }
 

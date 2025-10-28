@@ -61,6 +61,7 @@ public class LayerController : ControllerBase
         existingLayer.serviceUrl = updatedLayer.serviceUrl;
         existingLayer.serviceTypeId = updatedLayer.serviceTypeId;
         existingLayer.parameters = updatedLayer.parameters;
+        await _repository.UpdateAsync(existingLayer);
         return NoContent();
     }
 

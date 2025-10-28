@@ -60,6 +60,7 @@ public class LayerParametersController : ControllerBase
         existingLayerParameters.id = updatedLayerParameters.id;
         existingLayerParameters.TILEMATRIXSET = updatedLayerParameters.TILEMATRIXSET;
         existingLayerParameters.FORMAT = updatedLayerParameters.FORMAT;
+        await _repository.UpdateAsync(existingLayerParameters);
         return NoContent();
     }
     

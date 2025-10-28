@@ -62,6 +62,7 @@ public class FeatureController : ControllerBase
         existingFeature.properties = updatedFeature.properties;
         existingFeature.geometry = updatedFeature.geometry;
 
+        await _repository.UpdateAsync(existingFeature);
         return NoContent();
     }
     
