@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Reto_0_Backend.Models;
+using Reto_0_Backend.Repositories;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,30 +10,28 @@ using System.Text.Json;
 namespace Reto_0_Backend.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class SourceController : ControllerBase
 {
-    private readonly ILogger<Source> _logger;
+    private static List<Source> sources = new List<Source>();
+    private readonly ISourceRepository _repository;
 
-    public SourceController(ILogger<Source> logger)
-    {
-        _logger = logger;
+    
+    public SourceController(ISourceRepository repository) {
+        _repository = repository;
     }
 
-    // Nota: Source no tiene lista en DataCollectionExample,
-    // ya que se usan dentro de Events y Properties
-    private static List<Source> sources = new List<Source>();
-
     [HttpGet]
-    public ActionResult<IEnumerable<Source>> GetSources()
+    public async Task<ActionResult<List<Source>>> GetSources()
     {
+        var sources = await _repository.GetAllAsync();
         return Ok(sources);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Source> GetSource(string id)
+    public async Task<ActionResult<Source>> GetSource(string id)
     {
-        var source = sources.FirstOrDefault(s => s.id == id);
+        var source = await _repository.GetByIdAsync(id);
         if (source == null)
         {
             return NotFound();
@@ -42,34 +41,36 @@ public class SourceController : ControllerBase
 
     
     [HttpPost]
-    public ActionResult<Source> CreateSource(Source newSource)
+    public async Task<ActionResult<Source>> CreateSource(Source newSource)
     {
-        sources.Add(newSource);
+        await _repository.AddAsync(newSource);
         return CreatedAtAction(nameof(GetSource), new { id = newSource.id }, newSource);
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateSource(string id, Source updatedSource)
+     public async Task<IActionResult> UpdateSource(string id, Source updatedSource)
     {
-        var existingSource = sources.FirstOrDefault(s => s.id == id);
+        var existingSource = await _repository.GetByIdAsync(id);
         if (existingSource == null)
         {
             return NotFound();
         }
         existingSource.id = updatedSource.id;
         existingSource.url = updatedSource.url;
+
+        await _repository.UpdateAsync(existingSource);
         return NoContent();
     }
     
     [HttpDelete("{id}")]
-    public IActionResult DeleteSource(string id)
+    public async Task<IActionResult> DeleteSource(string id)
     {
-        var deleteSource = sources.FirstOrDefault(s => s.id == id);
+        var deleteSource = await _repository.GetByIdAsync(id);
         if (deleteSource == null)
         {
             return NotFound();
         }
-        sources.Remove(deleteSource);
+        await _repository.DeleteAsync(id);
         return NoContent();
     }
 }
