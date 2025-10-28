@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Reto_0_Backend.Models;
+using Reto_0_Backend.Repositories;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,9 +10,11 @@ using System.Text.Json;
 namespace Reto_0_Backend.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class FeatureController : ControllerBase
 {
+
+    /*
     private readonly DataCollectionExample _dataCollection;
     private readonly ILogger<Feature> _logger;
 
@@ -20,12 +23,23 @@ public class FeatureController : ControllerBase
         _logger = logger;
         _dataCollection = dataCollection;
     }
+    */
+
+    private static List<Feature> features = new List<Feature>(); = new List<Evento>();
+
+    private readonly IFeatureRepository _repository;
+
+    
+    public FeatureRepository(IFeatureRepository repository) {
+        _repository = repository;
+    }
 
 
     [HttpGet]
     public ActionResult<IEnumerable<Feature>> GetFeature()
     {
-        return Ok(_dataCollection.FeatureCollectionList);
+        var features = await _repository.GetAllAsync();
+        return Ok(features);
     }
 
     [HttpGet("{id}")]

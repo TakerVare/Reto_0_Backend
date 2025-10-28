@@ -15,21 +15,7 @@ public class CategoryController : ControllerBase
     private static List<Category> categories = new List<Category>();
     private readonly ICategoryRepository _repository;
 
-    /*
-    private readonly DataCollectionExample _dataCollection;
-    private readonly ILogger<CategoryController> _logger;
-    */
-
-    /*
-    public CategoryController(ILogger<CategoryController> logger, DataCollectionExample dataCollection)
-    {
-        _logger = logger;
-        _dataCollection = dataCollection;
-    }
-    */
-
-
-
+    
     public CategoryController(ICategoryRepository repository) {
         _repository = repository;
     }
