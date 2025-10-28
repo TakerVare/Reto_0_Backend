@@ -16,17 +16,7 @@ public class EventController : ControllerBase
     private static List<Evento> events = new List<Evento>();
     private readonly IEventRepository _repository;
 
-    /*
-    private readonly DataCollectionExample _dataCollection;
-    private readonly ILogger<EventController> _logger;
-
-    public EventController(ILogger<EventController> logger, DataCollectionExample dataCollection)
-    {
-        _logger = logger;
-        _dataCollection = dataCollection;
-    }
-    */
-
+    
     public EventController(IEventRepository repository) {
         _repository = repository;
     }
