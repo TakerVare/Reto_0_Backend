@@ -14,18 +14,7 @@ namespace Reto_0_Backend.Controllers;
 public class FeatureController : ControllerBase
 {
 
-    /*
-    private readonly DataCollectionExample _dataCollection;
-    private readonly ILogger<Feature> _logger;
-
-    public FeatureController(ILogger<Feature> logger, DataCollectionExample dataCollection)
-    {
-        _logger = logger;
-        _dataCollection = dataCollection;
-    }
-    */
-
-    private static List<Feature> features = new List<Feature>(); = new List<Evento>();
+    private static List<Feature> features = new List<Feature>();
 
     private readonly IFeatureRepository _repository;
 
