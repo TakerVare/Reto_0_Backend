@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Reto_0_Backend.Models;
+using Reto_0_Backend.Repositories;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,30 +10,26 @@ using System.Text.Json;
 namespace Reto_0_Backend.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class GeometryController : ControllerBase
 {
-    private readonly ILogger<Geometry> _logger;
-
-    public GeometryController(ILogger<Geometry> logger)
-    {
-        _logger = logger;
+    private static List<Geometry> geometries = new List<Geometry>();
+    private readonly IGeometryRepository _repository;
+    public GeometryController(IGeometryRepository repository) {
+        _repository = repository;
     }
 
-    // Nota: Geometry no tiene lista en DataCollectionExample, 
-    // ya que se usan dentro de Events y Features
-    private static List<Geometry> geometries = new List<Geometry>();
-
     [HttpGet]
-    public ActionResult<IEnumerable<Geometry>> GetGeometry()
+    public async Task<ActionResult<List<Geometry>>> GetGeometry()
     {
+        var geometries = await _repository.GetAllAsync();
         return Ok(geometries);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Geometry> GetGeometry(string id)
+    public async Task<ActionResult<Geometry>> GetGeometry(string id)
     {
-        var geometry = geometries.FirstOrDefault(g => g.id == id);
+        var geometry = await _repository.GetByIdAsync(id);
         if (geometry == null)
         {
             return NotFound();
@@ -42,16 +39,16 @@ public class GeometryController : ControllerBase
 
     
     [HttpPost]
-    public ActionResult<Geometry> CreateGeometry(Geometry newGeometry)
+    public async Task<ActionResult<Geometry>> CreateGeometry(Geometry newGeometry)
     {
-        geometries.Add(newGeometry);
+       await _repository.AddAsync(newGeometry);
         return CreatedAtAction(nameof(GetGeometry), new { id = newGeometry.id }, newGeometry);
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateGeometry(string id, Geometry updatedGeometry)
+    public async Task<IActionResult> UpdateGeometry(string id, Geometry updatedGeometry)
     {
-        var existingGeometry = geometries.FirstOrDefault(g => g.id == id);
+        var existingGeometry = await _repository.GetByIdAsync(id);
         if (existingGeometry == null)
         {
             return NotFound();
@@ -59,19 +56,21 @@ public class GeometryController : ControllerBase
         existingGeometry.id = updatedGeometry.id;
         existingGeometry.type = updatedGeometry.type;
         existingGeometry.coordinates = updatedGeometry.coordinates;
+        
 
+        await _repository.UpdateAsync(existingGeometry);
         return NoContent();
     }
     
     [HttpDelete("{id}")]
-    public IActionResult DeleteGeomtry(string id)
+     public async Task<IActionResult>  DeleteGeomtry(string id)
     {
-        var deleteGeometry = geometries.FirstOrDefault(g => g.id == id);
+        var deleteGeometry = await _repository.GetByIdAsync(id);
         if (deleteGeometry == null)
         {
             return NotFound();
         }
-        geometries.Remove(deleteGeometry);
+        await _repository.DeleteAsync(id);
         return NoContent();
     }
 }
