@@ -31,7 +31,7 @@ namespace Reto_0_Backend.Repositories
             {
                 await connection.OpenAsync();
 
-                string query = "SELECT Id, Title, Description, Link, Closed FROM Events";
+                string query = "SELECT Id, Title, DescriptionEvent, Link, Closed FROM Events";
                 using (var command = new SqlCommand(query, connection))
                 {
                     using (var reader = await command.ExecuteReaderAsync())
@@ -42,10 +42,11 @@ namespace Reto_0_Backend.Repositories
                             {
                                 id = reader.GetString(0),
                                 title = reader.GetString(1),
-                                description = reader.GetString(2),
+                                description = reader.IsDBNull(2) ? null : reader.GetString(2),
                                 link = reader.GetString(3),
-                                closed = reader.GetString(4),
-                                categories = await _categoryRepository.GetAllCategoriesByEventAsync(reader.GetString(0)),                                sources = await _sourceRepository.GetAllSourcesByEventAsync(reader.GetString(0)),
+                                closed = reader.IsDBNull(4) ? null : reader.GetString(4),
+                                categories = await _categoryRepository.GetAllCategoriesByEventAsync(reader.GetString(0)),
+                                sources = await _sourceRepository.GetAllSourcesByEventAsync(reader.GetString(0)),
                                 geometry = await _geometryRepository.GetAllGeometryByEventAsync(reader.GetString(0))                                
                             };
 
@@ -67,7 +68,7 @@ namespace Reto_0_Backend.Repositories
             {
                 await connection.OpenAsync();
 
-                string query = "SELECT Id, Title, Description, Link, Closed FROM Events WHERE EventId = @Id";
+                string query = "SELECT Id, Title, DescriptionEvent, Link, Closed FROM Events WHERE Id = @Id";
                 using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Id", id);
@@ -80,10 +81,10 @@ namespace Reto_0_Backend.Repositories
                             {
                                 id = reader.GetString(0),
                                 title = reader.GetString(1),
-                                description = reader.GetString(2),
+                                description = reader.IsDBNull(2) ? null : reader.GetString(2),
                                 link = reader.GetString(3),
-                                closed = reader.GetString(4),
-                                categories = await _categoryRepository.GetAllCategoriesByEventyAsync(reader.GetString(0)),
+                                closed = reader.IsDBNull(4) ? null : reader.GetString(4),
+                                categories = await _categoryRepository.GetAllCategoriesByEventAsync(reader.GetString(0)),
                                 sources = await _sourceRepository.GetAllSourcesByEventAsync(reader.GetString(0)),
                                 geometry = await _geometryRepository.GetAllGeometryByEventAsync(reader.GetString(0)) 
                             };   
@@ -106,9 +107,9 @@ namespace Reto_0_Backend.Repositories
                 {
                     command.Parameters.AddWithValue("@Id", evento.id);
                     command.Parameters.AddWithValue("@Title", evento.title);
-                    command.Parameters.AddWithValue("@DescriptionEvent", evento.description);
+                    command.Parameters.AddWithValue("@DescriptionEvent", (object)evento.description ?? DBNull.Value);
                     command.Parameters.AddWithValue("@Link", evento.link);
-                    command.Parameters.AddWithValue("@Closed", evento.closed);
+                    command.Parameters.AddWithValue("@Closed", (object)evento.closed ?? DBNull.Value);
                     //Pendiente de implementar métodos para insertar las listas de categorías, fuentes y geometrías
                     await command.ExecuteNonQueryAsync();
                 }
@@ -121,19 +122,20 @@ namespace Reto_0_Backend.Repositories
             {
                 await connection.OpenAsync();
 
-                string query = "UPDATE Events SET Title = @Title, DescriptionEvent = @DescriptionEvent, Link = @Link, Closed = @Closed WHERE IdCategory = @IdCategory";
+                string query = "UPDATE Events SET Title = @Title, DescriptionEvent = @DescriptionEvent, Link = @Link, Closed = @Closed WHERE Id = @Id";
                 using (var command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@IdCategory", evento.id);
+                    command.Parameters.AddWithValue("@Id", evento.id);
                     command.Parameters.AddWithValue("@Title", evento.title);
-                    command.Parameters.AddWithValue("@DescriptionEvent", evento.description);
+                    command.Parameters.AddWithValue("@DescriptionEvent", (object)evento.description ?? DBNull.Value);
                     command.Parameters.AddWithValue("@Link", evento.link);
-                    command.Parameters.AddWithValue("@Closed", evento.closed);
+                    command.Parameters.AddWithValue("@Closed", (object)evento.closed ?? DBNull.Value);
 
                     await command.ExecuteNonQueryAsync();
                 }
             }
         }
+        
         public async Task DeleteAsync(string id)
         {
             using (var connection = new SqlConnection(_connectionString))
