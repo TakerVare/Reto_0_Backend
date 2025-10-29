@@ -45,8 +45,7 @@ namespace Reto_0_Backend.Repositories
                                 description = reader.GetString(2),
                                 link = reader.GetString(3),
                                 closed = reader.GetString(4),
-                                categories = await _categoryRepository.GetAllCategoriesByEventyAsync(reader.GetString(0)),
-                                sources = await _sourceRepository.GetAllSourcesByEventAsync(reader.GetString(0)),
+                                categories = await _categoryRepository.GetAllCategoriesByEventAsync(reader.GetString(0)),                                sources = await _sourceRepository.GetAllSourcesByEventAsync(reader.GetString(0)),
                                 geometry = await _geometryRepository.GetAllGeometryByEventAsync(reader.GetString(0))                                
                             };
 

@@ -45,7 +45,7 @@ public class LayerController : ControllerBase
     public async Task<ActionResult<Layer>> CreateLayer(Layer newLayer)
     {
          await _repository.AddAsync(newLayer);
-        return CreatedAtAction(nameof(newLayer), new { id = newLayer.id }, newLayer);
+        return CreatedAtAction(nameof(GetLayer), new { id = newLayer.id }, newLayer);
     }
 
     [HttpPut("{id}")]
